@@ -1,1 +1,2 @@
-export * from './multiton';
+export * from './implementations';
+export * from './providers';

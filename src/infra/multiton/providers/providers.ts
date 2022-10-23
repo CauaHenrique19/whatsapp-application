@@ -1,0 +1,1 @@
+export const MULTITON_LOCAL = 'MULTITON_LOCAL';
