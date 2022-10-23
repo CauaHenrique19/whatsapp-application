@@ -2,5 +2,8 @@ import { WhatsappClientInterface } from './whatsapp-client';
 
 //generic contract for implementation
 export interface WhatsappAdapter {
-  create(id: string): Promise<WhatsappClientInterface>;
+  create(
+    id: string,
+    onQr: (qr: string) => void,
+  ): Promise<WhatsappClientInterface>;
 }
