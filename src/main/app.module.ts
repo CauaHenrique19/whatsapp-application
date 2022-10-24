@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
+import { ConnectModule } from './gateways';
 
 @Module({
-  imports: [],
-  controllers: [],
-  providers: [],
+  imports: [ConnectModule],
 })
 export class AppModule {}
