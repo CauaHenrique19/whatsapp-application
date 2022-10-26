@@ -8,11 +8,16 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
+import { BuildConnectToWhatsappGatewayFactory } from '../../factories/gateways/authentication';
 
 @WebSocketGateway()
 export class ConnectGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
+  constructor(
+    private readonly buildConnectToWhatsappGatewayFactory: BuildConnectToWhatsappGatewayFactory,
+  ) {}
+
   @WebSocketServer()
   server: Server;
 
@@ -25,10 +30,14 @@ export class ConnectGateway
   }
 
   @SubscribeMessage('get_qr_code')
-  listenForMessages(
+  async listenForMessages(
     @MessageBody() data: string,
     @ConnectedSocket() client: Socket,
   ) {
+    const gateway = await this.buildConnectToWhatsappGatewayFactory.build();
+    const qrCode = await gateway.handle({ id: 'jamal' });
+
+    console.log(qrCode);
     console.log('received solicitation to get qr code: ', data);
   }
 }
