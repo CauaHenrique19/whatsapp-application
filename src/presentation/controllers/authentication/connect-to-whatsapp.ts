@@ -1,3 +1,4 @@
+import { ObserverInterface } from 'src/data/protocols/observer';
 import { ConnectToWhatsapp } from 'src/domain/usecases';
 import { Gateway } from 'src/presentation/protocols';
 
@@ -8,12 +9,8 @@ export class ConnectToWhatsappGateway implements Gateway {
     data: ConnectToWhatsappGateway.Parameters,
   ): Promise<ConnectToWhatsappGateway.Result> {
     try {
-      const { id } = data;
-      const qrCode = await this.connectToWhatsapp.connect({ id });
-
-      return {
-        qrCode,
-      };
+      const { id, observer } = data;
+      await this.connectToWhatsapp.connect({ id, observer });
     } catch (error) {
       return {
         error: 'Internal Server Error',
@@ -26,13 +23,12 @@ export class ConnectToWhatsappGateway implements Gateway {
 export namespace ConnectToWhatsappGateway {
   export type Parameters = {
     id: string;
+    observer: ObserverInterface<{ qrCode: string }>;
   };
 
   export type Result = SucessResult | ErrorResult;
 
-  type SucessResult = {
-    qrCode: string;
-  };
+  type SucessResult = void;
 
   type ErrorResult = {
     error: string;

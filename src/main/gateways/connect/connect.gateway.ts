@@ -8,6 +8,7 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
+import { Observer } from 'src/infra/observer/observer';
 import { BuildConnectToWhatsappGatewayFactory } from '../../factories/gateways/authentication';
 
 @WebSocketGateway()
@@ -22,7 +23,7 @@ export class ConnectGateway
   server: Server;
 
   async handleConnection(socket: Socket) {
-    console.log('new client');
+    //todo
   }
 
   async handleDisconnect(socket: Socket) {
@@ -34,10 +35,9 @@ export class ConnectGateway
     @MessageBody() data: string,
     @ConnectedSocket() client: Socket,
   ) {
-    const gateway = await this.buildConnectToWhatsappGatewayFactory.build();
-    const qrCode = await gateway.handle({ id: 'jamal' });
+    const observer = new Observer<{ qrCode: string }>((qrCode) => {});
 
-    console.log(qrCode);
-    console.log('received solicitation to get qr code: ', data);
+    const gateway = await this.buildConnectToWhatsappGatewayFactory.build();
+    await gateway.handle({ id: 'jamal', observer });
   }
 }

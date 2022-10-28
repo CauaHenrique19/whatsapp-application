@@ -14,16 +14,15 @@ export class ConnectToWhatsappUseCase implements ConnectToWhatsapp {
   async connect(
     parameters: ConnectToWhatsapp.Parameters,
   ): Promise<ConnectToWhatsapp.Result> {
-    const { id } = parameters;
-    const qrCode = new Promise<string>(async (resolve) => {
-      const client = await this.whatsappClient.create(id, (qrCode: string) => {
-        console.log(`new qr code: ${qrCode}`);
-        resolve(qrCode);
-      });
+    const { id, observer } = parameters;
 
-      await this.multiton.addInstance({ id, instance: client });
+    const client = await this.whatsappClient.create(id, (qrCode: string) => {
+      observer.notify({ qrCode });
     });
 
-    return qrCode;
+    await this.multiton.addInstance({ id, instance: client });
+
+    // const qrCode = new Promise<string>(async (resolve) => {
+    // });
   }
 }
