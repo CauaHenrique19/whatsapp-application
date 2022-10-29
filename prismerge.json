@@ -1,0 +1,11 @@
+{
+  "app": {
+    "inputs": [
+      "../web-api/src/infra/prisma/config.prisma",
+      "../web-api/src/infra/prisma/entity/client/client.prisma",
+      "../web-api/src/infra/prisma/entity/user/user.prisma"
+    ],
+    "fragments": {},
+    "output": "../web-api/src/infra/prisma/schema.prisma"
+  }
+}
