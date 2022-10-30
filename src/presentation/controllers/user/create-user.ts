@@ -30,7 +30,9 @@ export class CreateUserController implements Controller {
       }
 
       const result = await this.createUserUseCase.create(data);
-      return ok(result);
+      const httpResponse = result.valid ? ok(result.result) : badRequest(new Error(result.result as string));
+
+      return httpResponse;
     } catch (error) {
       return serverError(error);
     }

@@ -6,5 +6,8 @@ export interface CreateUserUseCase {
 
 export namespace CreateUserUseCase {
   export type Parameters = Omit<UserModel, 'createdAt' | 'client' | 'status'> & { confirmationPassword: string };
-  export type Result = Omit<UserModel, 'password' | 'client'>;
+  export type Result = {
+    valid: boolean;
+    result: Omit<UserModel, 'password' | 'client'> | string;
+  };
 }

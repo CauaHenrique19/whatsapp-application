@@ -9,7 +9,7 @@ export const createUserFactory: Provider = {
   provide: CREATE_USER_FACTORY,
   useFactory: (userPrismaRepository: UserPrismaRepository): CreateUserUseCase => {
     const bcryptAdapter = new BcryptAdapter(10);
-    return new DbCreateUser(userPrismaRepository, bcryptAdapter);
+    return new DbCreateUser(userPrismaRepository, userPrismaRepository, bcryptAdapter);
   },
   inject: [UserPrismaRepository],
 };

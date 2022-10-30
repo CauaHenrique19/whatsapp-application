@@ -6,5 +6,5 @@ export interface LoadUserByEmailUseCase {
 
 export namespace LoadUserByEmailUseCase {
   export type Parameters = string;
-  export type Result = Omit<UserModel, 'client'>;
+  export type Result = Omit<UserModel, 'client'> | null;
 }

@@ -1,13 +1,25 @@
 import { UserStatusEnum } from 'src/data/enums';
 import { Encrypter } from 'src/data/protocols/cryptography';
-import { CreateUserRepository } from 'src/data/protocols/db';
+import { CreateUserRepository, LoadUserByEmailRepository } from 'src/data/protocols/db';
 import { UserModel } from 'src/domain/models/user';
 import { CreateUserUseCase } from 'src/domain/usecases';
 
 export class DbCreateUser implements CreateUserUseCase {
-  constructor(private readonly createUserRepository: CreateUserRepository, private readonly encrypter: Encrypter) {}
+  constructor(
+    private readonly createUserRepository: CreateUserRepository,
+    private readonly loadUserByEmailRepository: LoadUserByEmailRepository,
+    private readonly encrypter: Encrypter,
+  ) {}
 
   async create(parameters: CreateUserUseCase.Parameters): Promise<CreateUserUseCase.Result> {
+    const userInDb = await this.loadUserByEmailRepository.loadByEmail(parameters.email);
+    if (userInDb) {
+      return {
+        valid: false,
+        result: 'Already exists user with this email',
+      };
+    }
+
     const hashedPassword = await this.encrypter.encrypt(parameters.password);
 
     const user: Omit<UserModel, 'client'> = {
@@ -21,6 +33,11 @@ export class DbCreateUser implements CreateUserUseCase {
       createdAt: new Date(),
     };
 
-    return await this.createUserRepository.create(user);
+    const createdUser = await this.createUserRepository.create(user);
+
+    return {
+      valid: true,
+      result: createdUser,
+    };
   }
 }

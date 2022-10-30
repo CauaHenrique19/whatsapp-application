@@ -41,10 +41,12 @@ export class UserPrismaRepository implements CreateUserRepository, LoadUserByEma
       },
     });
 
-    return {
-      ...user,
-      lastName: user.last_name,
-      clientId: user.client_id,
-    };
+    return user?.id
+      ? {
+          ...user,
+          lastName: user?.last_name,
+          clientId: user?.client_id,
+        }
+      : null;
   }
 }
