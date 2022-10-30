@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { CreateUserRepository } from 'src/data/protocols/db';
+import { CreateUserRepository, LoadUserByEmailRepository } from 'src/data/protocols/db';
 
-export class UserPrismaRepository implements CreateUserRepository {
+export class UserPrismaRepository implements CreateUserRepository, LoadUserByEmailRepository {
   private userRepository: Prisma.UserDelegate<Prisma.RejectOnNotFound | Prisma.RejectPerOperation>;
 
   constructor() {
@@ -31,6 +31,20 @@ export class UserPrismaRepository implements CreateUserRepository {
       ...result,
       lastName: result.last_name,
       clientId: result.client_id,
+    };
+  }
+
+  async loadByEmail(email: LoadUserByEmailRepository.Parameters): Promise<LoadUserByEmailRepository.Result> {
+    const user = await this.userRepository.findFirst({
+      where: {
+        email: email,
+      },
+    });
+
+    return {
+      ...user,
+      lastName: user.last_name,
+      clientId: user.client_id,
     };
   }
 }

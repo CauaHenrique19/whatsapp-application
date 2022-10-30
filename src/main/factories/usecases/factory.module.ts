@@ -4,7 +4,7 @@ import { ClientPrismaRepository } from 'src/infra/prisma/repositories/client';
 import { UserPrismaRepository } from 'src/infra/prisma/repositories/user';
 import { connectToWhatsappFactory } from './authentication';
 import { createClientFactory } from './client/create-client.factory';
-import { createUserFactory } from './user';
+import { createUserFactory, loadUserByEmailFactory } from './user';
 
 @Module({
   providers: [
@@ -22,6 +22,7 @@ import { createUserFactory } from './user';
 
     //user
     createUserFactory,
+    loadUserByEmailFactory,
   ],
   exports: [
     //whatsapp
@@ -32,6 +33,7 @@ import { createUserFactory } from './user';
 
     //user
     createUserFactory,
+    loadUserByEmailFactory,
   ],
 })
 export class FactoryModule {}
