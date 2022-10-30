@@ -1,5 +1,5 @@
 import { UserStatusEnum } from 'src/data/enums';
-import { Encrypter } from 'src/data/protocols/cryptography';
+import { Hasher } from 'src/data/protocols/cryptography';
 import { CreateUserRepository, LoadUserByEmailRepository } from 'src/data/protocols/db';
 import { UserModel } from 'src/domain/models/user';
 import { CreateUserUseCase } from 'src/domain/usecases';
@@ -8,7 +8,7 @@ export class DbCreateUser implements CreateUserUseCase {
   constructor(
     private readonly createUserRepository: CreateUserRepository,
     private readonly loadUserByEmailRepository: LoadUserByEmailRepository,
-    private readonly encrypter: Encrypter,
+    private readonly hasher: Hasher,
   ) {}
 
   async create(parameters: CreateUserUseCase.Parameters): Promise<CreateUserUseCase.Result> {
@@ -20,7 +20,7 @@ export class DbCreateUser implements CreateUserUseCase {
       };
     }
 
-    const hashedPassword = await this.encrypter.encrypt(parameters.password);
+    const hashedPassword = await this.hasher.hash(parameters.password);
 
     const user: Omit<UserModel, 'client'> = {
       email: parameters.email,

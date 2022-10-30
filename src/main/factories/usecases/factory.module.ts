@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MultitonProvider } from 'src/infra/multiton';
 import { ClientPrismaRepository } from 'src/infra/prisma/repositories/client';
 import { UserPrismaRepository } from 'src/infra/prisma/repositories/user';
-import { connectToWhatsappFactory } from './authentication';
+import { authenticationFactory, connectToWhatsappFactory } from './authentication';
 import { createClientFactory } from './client/create-client.factory';
 import { createUserFactory, loadUserByEmailFactory } from './user';
 
@@ -23,6 +23,9 @@ import { createUserFactory, loadUserByEmailFactory } from './user';
     //user
     createUserFactory,
     loadUserByEmailFactory,
+
+    //authentication
+    authenticationFactory,
   ],
   exports: [
     //whatsapp
@@ -34,6 +37,9 @@ import { createUserFactory, loadUserByEmailFactory } from './user';
     //user
     createUserFactory,
     loadUserByEmailFactory,
+
+    //authentication
+    authenticationFactory,
   ],
 })
 export class FactoryModule {}
