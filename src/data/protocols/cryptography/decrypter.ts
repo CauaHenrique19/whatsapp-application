@@ -1,3 +1,7 @@
 export interface Decrypter {
-  decrypt(token: string): Promise<string>;
+  decrypt(token: string): Promise<DecrypterResult>;
+}
+
+export interface DecrypterResult {
+  id: string;
 }
