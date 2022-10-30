@@ -25,6 +25,8 @@ export class UserPrismaRepository implements CreateUserRepository {
       },
     });
 
+    delete result.password;
+
     return {
       ...result,
       lastName: result.last_name,
