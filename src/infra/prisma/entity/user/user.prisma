@@ -1,15 +1,15 @@
 model User {
-  id          Int       @id @default(autoincrement())
-  email       String    @unique
-  name        String    
-  last_name   String    
-  password    String
-  admin       Boolean   @default(false)
-  client_id   Int       
-  status      Int
-  createdAt   DateTime    @default(now())
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  lastName  String   @map("last_name")
+  password  String
+  admin     Boolean  @default(false)
+  clientId  Int      @map("client_id")
+  status    Int
+  createdAt DateTime @default(now()) @map("created_at")
 
-  client      Client    @relation(fields: [client_id], references: [id])
+  client Client @relation(fields: [clientId], references: [id])
 
   @@map("tb_user")
 }

@@ -10,28 +10,13 @@ export class UserPrismaRepository implements CreateUserRepository, LoadUserByEma
   }
 
   async create(parameters: CreateUserRepository.Parameters): Promise<CreateUserRepository.Result> {
-    const { name, lastName, email, password, admin, clientId, createdAt, status } = parameters;
-
     const result = await this.userRepository.create({
-      data: {
-        name,
-        last_name: lastName,
-        email,
-        password,
-        admin,
-        client_id: clientId,
-        createdAt,
-        status,
-      },
+      data: parameters
     });
 
     delete result.password;
 
-    return {
-      ...result,
-      lastName: result.last_name,
-      clientId: result.client_id,
-    };
+    return result
   }
 
   async loadByEmail(email: LoadUserByEmailRepository.Parameters): Promise<LoadUserByEmailRepository.Result> {
@@ -42,11 +27,7 @@ export class UserPrismaRepository implements CreateUserRepository, LoadUserByEma
     });
 
     return user?.id
-      ? {
-          ...user,
-          lastName: user?.last_name,
-          clientId: user?.client_id,
-        }
+      ? user
       : null;
   }
 }
