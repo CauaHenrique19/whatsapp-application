@@ -1,7 +1,5 @@
-export interface Decrypter {
-  decrypt(token: string): Promise<DecrypterResult>;
-}
+import { InfoToken } from './info-token';
 
-export interface DecrypterResult {
-  id: string;
+export interface Decrypter {
+  decrypt(token: string): Promise<InfoToken>;
 }

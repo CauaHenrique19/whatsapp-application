@@ -1,3 +1,5 @@
+import { InfoToken } from './info-token';
+
 export interface Encrypter {
-  encrypt(value: string): Promise<string>;
+  encrypt(value: InfoToken): Promise<string>;
 }
