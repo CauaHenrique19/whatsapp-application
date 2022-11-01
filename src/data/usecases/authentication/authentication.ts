@@ -29,7 +29,7 @@ export class Authentication implements AuthenticationUseCase {
     }
 
     delete user.password;
-    const token = await this.encrypter.encrypt(user.id.toString());
+    const token = await this.encrypter.encrypt({ id: user.id.toString(), email: user.email });
 
     return {
       valid: true,
