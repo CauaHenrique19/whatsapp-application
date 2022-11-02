@@ -20,7 +20,7 @@ export class CreateUserController implements Controller {
       ];
 
       for (const field of mandatoryFields) {
-        if (!data[field]) {
+        if (data[field] === null || undefined) {
           return badRequest(new MissingParamError(field));
         }
       }
