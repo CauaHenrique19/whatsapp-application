@@ -1,3 +1,4 @@
+import { UsePipes, ValidationPipe } from '@nestjs/common';
 import {
   MessageBody,
   OnGatewayConnection,
@@ -9,15 +10,13 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { Observer } from 'src/infra/observer/observer';
+import { controllerAdapter } from 'src/main/adapters';
 import { BuildConnectToWhatsappGatewayFactory } from '../../factories/gateways/authentication';
+import { ConnectToWhatsappDTO } from './dtos';
 
 @WebSocketGateway()
-export class ConnectGateway
-  implements OnGatewayConnection, OnGatewayDisconnect
-{
-  constructor(
-    private readonly buildConnectToWhatsappGatewayFactory: BuildConnectToWhatsappGatewayFactory,
-  ) {}
+export class ConnectGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  constructor(private readonly buildConnectToWhatsappGatewayFactory: BuildConnectToWhatsappGatewayFactory) {}
 
   @WebSocketServer()
   server: Server;
@@ -27,17 +26,28 @@ export class ConnectGateway
   }
 
   async handleDisconnect(socket: Socket) {
-    console.log('client disconnected');
+    //todo
   }
 
   @SubscribeMessage('get_qr_code')
-  async listenForMessages(
-    @MessageBody() data: string,
-    @ConnectedSocket() client: Socket,
-  ) {
-    const observer = new Observer<{ qrCode: string }>((qrCode) => {});
+  @UsePipes(new ValidationPipe({ whitelist: true, skipUndefinedProperties: true }))
+  async listenForMessages(@MessageBody() data: ConnectToWhatsappDTO, @ConnectedSocket() client: Socket) {
+    const observer = new Observer<{ qrCode: string }>((qrCode) => {
+      client.emit('new_qr_code', qrCode);
+    });
 
-    const gateway = await this.buildConnectToWhatsappGatewayFactory.build();
-    await gateway.handle({ id: 'jamal', observer });
+    const token = client.request.headers.authorization;
+    const response = await controllerAdapter(this.buildConnectToWhatsappGatewayFactory.build(), { ...data, observer, token });
+
+    let event = 'new_qr_code';
+
+    if (response.statusCode === 200) {
+      event = 'connected';
+    }
+
+    return {
+      event,
+      data: response,
+    };
   }
 }
