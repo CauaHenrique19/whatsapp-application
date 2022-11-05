@@ -1,9 +1,9 @@
 import { Decrypter } from 'src/data/protocols/cryptography';
 import { serverError, unauthorized } from 'src/presentation/helpers';
-import { Controller, HttpResponse } from 'src/presentation/protocols';
+import { Controller, Gateway, HttpResponse } from 'src/presentation/protocols';
 
-export class AuthenticationProxy implements Controller {
-  constructor(private readonly controller: Controller, private readonly decrypter: Decrypter) {}
+export class AuthenticationProxy implements Controller, Gateway {
+  constructor(private readonly controller: Controller | Gateway, private readonly decrypter: Decrypter) {}
 
   async handle(data: any): Promise<HttpResponse> {
     try {
