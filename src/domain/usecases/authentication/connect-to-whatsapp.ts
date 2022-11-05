@@ -9,5 +9,7 @@ export namespace ConnectToWhatsapp {
     clientId: string;
     observer: ObserverInterface<{ qrCode: string }>;
   };
-  export type Result = void;
+  export type Result = {
+    connected: boolean;
+  };
 }

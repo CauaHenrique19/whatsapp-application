@@ -13,5 +13,9 @@ export class ConnectToWhatsappUseCase implements ConnectToWhatsapp {
     });
 
     await this.multiton.addInstance({ id: clientId, instance: client });
+
+    return {
+      connected: true,
+    };
   }
 }

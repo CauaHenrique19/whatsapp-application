@@ -1,19 +1,18 @@
 import { ObserverInterface } from 'src/data/protocols/observer';
 import { ConnectToWhatsapp } from 'src/domain/usecases';
-import { Gateway } from 'src/presentation/protocols';
+import { badRequest, ok } from 'src/presentation/helpers';
+import { Gateway, HttpResponse } from 'src/presentation/protocols';
 
 export class ConnectToWhatsappGateway implements Gateway {
   constructor(private readonly connectToWhatsapp: ConnectToWhatsapp) {}
 
-  async handle(data: ConnectToWhatsappGateway.Parameters): Promise<ConnectToWhatsappGateway.Result> {
+  async handle(data: ConnectToWhatsappGateway.Parameters): Promise<HttpResponse> {
     try {
       const { clientId, observer } = data;
-      await this.connectToWhatsapp.connect({ clientId, observer });
+      const result = await this.connectToWhatsapp.connect({ clientId, observer });
+      return ok(result);
     } catch (error) {
-      return {
-        error: 'Internal Server Error',
-        statusCode: 500,
-      };
+      return badRequest(error);
     }
   }
 }
@@ -22,14 +21,5 @@ export namespace ConnectToWhatsappGateway {
   export type Parameters = {
     clientId: string;
     observer: ObserverInterface<{ qrCode: string }>;
-  };
-
-  export type Result = SucessResult | ErrorResult;
-
-  type SucessResult = void;
-
-  type ErrorResult = {
-    error: string;
-    statusCode: number;
   };
 }
