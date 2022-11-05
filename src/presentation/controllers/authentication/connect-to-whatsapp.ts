@@ -5,12 +5,10 @@ import { Gateway } from 'src/presentation/protocols';
 export class ConnectToWhatsappGateway implements Gateway {
   constructor(private readonly connectToWhatsapp: ConnectToWhatsapp) {}
 
-  async handle(
-    data: ConnectToWhatsappGateway.Parameters,
-  ): Promise<ConnectToWhatsappGateway.Result> {
+  async handle(data: ConnectToWhatsappGateway.Parameters): Promise<ConnectToWhatsappGateway.Result> {
     try {
-      const { id, observer } = data;
-      await this.connectToWhatsapp.connect({ id, observer });
+      const { clientId, observer } = data;
+      await this.connectToWhatsapp.connect({ clientId, observer });
     } catch (error) {
       return {
         error: 'Internal Server Error',
@@ -22,7 +20,7 @@ export class ConnectToWhatsappGateway implements Gateway {
 
 export namespace ConnectToWhatsappGateway {
   export type Parameters = {
-    id: string;
+    clientId: string;
     observer: ObserverInterface<{ qrCode: string }>;
   };
 
