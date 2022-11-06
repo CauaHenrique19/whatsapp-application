@@ -3,10 +3,12 @@ import { MultitonProvider } from 'src/infra/multiton';
 import { ChannelPrismaRepository } from 'src/infra/prisma/repositories/channel';
 import { ClientPrismaRepository } from 'src/infra/prisma/repositories/client';
 import { UserPrismaRepository } from 'src/infra/prisma/repositories/user';
+import { UserChannelPrismaRepository } from 'src/infra/prisma/repositories/user-channel';
 import { authenticationFactory, connectToWhatsappFactory } from './authentication';
 import { createChannelFactory } from './channel';
 import { createClientFactory } from './client/create-client.factory';
 import { createUserFactory, loadUserByEmailFactory } from './user';
+import { createUserChannelFactory } from './user-channel';
 
 @Module({
   providers: [
@@ -16,6 +18,7 @@ import { createUserFactory, loadUserByEmailFactory } from './user';
     ClientPrismaRepository,
     UserPrismaRepository,
     ChannelPrismaRepository,
+    UserChannelPrismaRepository,
 
     //whatsapp
     connectToWhatsappFactory,
@@ -32,6 +35,9 @@ import { createUserFactory, loadUserByEmailFactory } from './user';
 
     //channel
     createChannelFactory,
+
+    //userChannel
+    createUserChannelFactory,
   ],
   exports: [
     //whatsapp
@@ -49,6 +55,9 @@ import { createUserFactory, loadUserByEmailFactory } from './user';
 
     //channel
     createChannelFactory,
+
+    //userChannel
+    createUserChannelFactory,
   ],
 })
 export class FactoryModule {}
