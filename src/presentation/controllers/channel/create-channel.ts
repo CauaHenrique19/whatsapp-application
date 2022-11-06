@@ -8,7 +8,7 @@ export class CreateChannelController implements Controller {
 
   async handle(data: CreateChannelController.Parameters): Promise<HttpResponse> {
     try {
-      const mandatoryFields: CreateChannelController.MandatoryFields[] = ['clientId', 'name'];
+      const mandatoryFields: CreateChannelController.MandatoryFields[] = ['clientId', 'name', 'users'];
 
       for (const field of mandatoryFields) {
         if (!data[field] === null) {
@@ -16,7 +16,7 @@ export class CreateChannelController implements Controller {
         }
       }
 
-      const channel = await this.createChannelUseCase.create({ clientId: data.clientId, name: data.name });
+      const channel = await this.createChannelUseCase.create({ clientId: data.clientId, name: data.name, users: data.users });
 
       return ok(channel);
     } catch (error) {

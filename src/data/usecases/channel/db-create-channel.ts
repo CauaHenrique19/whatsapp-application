@@ -1,9 +1,12 @@
-import { ChannelStatusEnum } from 'src/data/enums';
-import { CreateChannelRepository } from 'src/data/protocols/db';
+import { ChannelStatusEnum, UserChannelStatusEnum } from 'src/data/enums';
+import { CreateChannelRepository, CreateUserChannelRepository } from 'src/data/protocols/db';
 import { CreateChannelUseCase } from 'src/domain/usecases';
 
 export class DbCreateChannel implements CreateChannelUseCase {
-  constructor(private readonly createChannelRepository: CreateChannelRepository) {}
+  constructor(
+    private readonly createChannelRepository: CreateChannelRepository,
+    private readonly createUserChannelRepository: CreateUserChannelRepository,
+  ) {}
 
   async create(parameters: CreateChannelUseCase.Parameters): Promise<CreateChannelUseCase.Result> {
     const channel: CreateChannelRepository.Parameters = {
@@ -13,6 +16,17 @@ export class DbCreateChannel implements CreateChannelUseCase {
       createdAt: new Date(),
     };
 
-    return await this.createChannelRepository.create(channel);
+    const createdChannel = await this.createChannelRepository.create(channel);
+
+    const usersInChannel: CreateUserChannelRepository.Parameters = parameters.users.map((userId) => ({
+      userId,
+      channelId: createdChannel.id,
+      createdAt: new Date(),
+      status: UserChannelStatusEnum.ACTIVE,
+    }));
+
+    await this.createUserChannelRepository.create(usersInChannel);
+
+    return createdChannel;
   }
 }
