@@ -1,0 +1,12 @@
+model Channel {
+    id        Int      @id @default(autoincrement())
+    name      String
+    clientId  Int      @map("client_id")
+    status    Int
+    createdAt DateTime @default(now()) @map("created_at")
+
+    client Client @relation(fields: [clientId], references: [id])
+    users  User[] @relation("tb_user_in_channel")
+
+    @@map("tb_channel")
+}

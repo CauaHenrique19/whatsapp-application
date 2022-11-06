@@ -9,7 +9,8 @@ model User {
   status    Int
   createdAt DateTime @default(now()) @map("created_at")
 
-  client Client @relation(fields: [clientId], references: [id])
+  client   Client    @relation(fields: [clientId], references: [id])
+  channels Channel[] @relation("tb_user_in_channel")
 
   @@map("tb_user")
 }

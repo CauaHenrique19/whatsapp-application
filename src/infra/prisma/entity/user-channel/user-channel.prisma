@@ -1,0 +1,8 @@
+model UserChannel {
+    id        Int      @id @default(autoincrement())
+    userId    Int      @map("user_id")
+    channelId Int      @map("channel_id")
+    createdAt DateTime @default(now()) @map("created_at")
+
+    @@map("tb_user_in_channel")
+}
