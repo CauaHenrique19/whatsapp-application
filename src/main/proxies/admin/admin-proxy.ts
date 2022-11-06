@@ -23,9 +23,8 @@ export class AdminProxy implements Controller {
         return unauthorized();
       }
 
-      return await this.controller.handle(data);
+      return await this.controller.handle({ ...data, user });
     } catch (error) {
-      console.log(error);
       return serverError(error);
     }
   }

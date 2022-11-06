@@ -10,7 +10,7 @@ export class ClientController {
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async createClient(@Body() body: CreateClientDTO, @Headers('authorization') token, @Response() response) {
-    const result = await controllerAdapter(this.buildCreateClientControllerFactory.build(), { ...body, token });
+    const result = await controllerAdapter(this.buildCreateClientControllerFactory.build(), { data: body, token });
     return response.status(result.statusCode).json(result);
   }
 }

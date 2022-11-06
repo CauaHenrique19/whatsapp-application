@@ -8,7 +8,7 @@ export class AuthenticationController {
 
   @Post('/login')
   async createClient(@Body() body, @Response() response) {
-    const result = await controllerAdapter(this.buildLoginControllerFactory.build(), body);
+    const result = await controllerAdapter(this.buildLoginControllerFactory.build(), { data: body });
     return response.status(result.statusCode).json(result);
   }
 }

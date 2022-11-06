@@ -2,12 +2,12 @@ import { UserModel } from 'src/domain/models/user';
 import { CreateUserUseCase } from 'src/domain/usecases';
 import { InvalidParamError, MissingParamError } from 'src/presentation/errors';
 import { badRequest, ok, serverError } from 'src/presentation/helpers';
-import { Controller, HttpResponse } from 'src/presentation/protocols';
+import { ControllerData, Controller, HttpResponse } from 'src/presentation/protocols';
 
 export class CreateUserController implements Controller {
   constructor(private readonly createUserUseCase: CreateUserUseCase) {}
 
-  async handle(data: CreateUserController.Parameters): Promise<HttpResponse> {
+  async handle(parameters: ControllerData<CreateUserController.Parameters>): Promise<HttpResponse> {
     try {
       const mandatoryFields: CreateUserController.MandatoryFields[] = [
         'email',
@@ -20,16 +20,16 @@ export class CreateUserController implements Controller {
       ];
 
       for (const field of mandatoryFields) {
-        if (data[field] === null || undefined) {
+        if (parameters.data[field] === null || undefined) {
           return badRequest(new MissingParamError(field));
         }
       }
 
-      if (data.password !== data.confirmationPassword) {
+      if (parameters.data.password !== parameters.data.confirmationPassword) {
         return badRequest(new InvalidParamError('confirmationPassword'));
       }
 
-      const result = await this.createUserUseCase.create(data);
+      const result = await this.createUserUseCase.create(parameters.data);
       const httpResponse = result.valid ? ok(result.result) : badRequest(new Error(result.result as string));
 
       return httpResponse;

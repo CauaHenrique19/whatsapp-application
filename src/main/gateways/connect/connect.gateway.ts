@@ -37,7 +37,7 @@ export class ConnectGateway implements OnGatewayConnection, OnGatewayDisconnect 
     });
 
     const token = client.request.headers.authorization;
-    const response = await controllerAdapter(this.buildConnectToWhatsappGatewayFactory.build(), { ...data, observer, token });
+    const response = await controllerAdapter(this.buildConnectToWhatsappGatewayFactory.build(), { data, observer, token });
 
     let event = 'new_qr_code';
 

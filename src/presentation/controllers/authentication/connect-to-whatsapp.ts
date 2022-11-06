@@ -1,14 +1,14 @@
 import { ObserverInterface } from 'src/data/protocols/observer';
 import { ConnectToWhatsapp } from 'src/domain/usecases';
 import { badRequest, ok } from 'src/presentation/helpers';
-import { Gateway, HttpResponse } from 'src/presentation/protocols';
+import { ControllerData, Gateway, HttpResponse } from 'src/presentation/protocols';
 
 export class ConnectToWhatsappGateway implements Gateway {
   constructor(private readonly connectToWhatsapp: ConnectToWhatsapp) {}
 
-  async handle(data: ConnectToWhatsappGateway.Parameters): Promise<HttpResponse> {
+  async handle(data: ControllerData<ConnectToWhatsappGateway.Parameters>): Promise<HttpResponse> {
     try {
-      const { clientId, observer } = data;
+      const { clientId, observer } = data.data;
       const result = await this.connectToWhatsapp.connect({ clientId, observer });
       return ok(result);
     } catch (error) {

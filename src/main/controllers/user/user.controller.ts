@@ -11,7 +11,7 @@ export class UserController {
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async createUser(@Body() body: CreateUserDTO, @Response() response: ResponseExpress): Promise<ResponseExpress> {
-    const result = await controllerAdapter(this.buildCreateUserControllerFactory.build(), body);
+    const result = await controllerAdapter(this.buildCreateUserControllerFactory.build(), { data: body });
     return response.status(result.statusCode).json(result);
   }
 }

@@ -8,7 +8,7 @@ export class ChannelController {
 
   @Post()
   async create(@Body() data, @Headers('authorization') token, @Response() response) {
-    const result = await controllerAdapter(this.buildCreateChannelControllerFactory.build(), { ...data, token });
+    const result = await controllerAdapter(this.buildCreateChannelControllerFactory.build(), { data, token });
     return response.status(result.statusCode).json(result);
   }
 }
