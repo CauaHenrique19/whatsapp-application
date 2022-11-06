@@ -59,6 +59,7 @@ model UserChannel {
   userId    Int      @map("user_id")
   channelId Int      @map("channel_id")
   createdAt DateTime @default(now()) @map("created_at")
+  status    Int
 
   @@map("tb_user_in_channel")
 }
