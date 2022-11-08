@@ -4,6 +4,7 @@ import { ChannelPrismaRepository } from 'src/infra/prisma/repositories/channel';
 import { ClientPrismaRepository } from 'src/infra/prisma/repositories/client';
 import { UserPrismaRepository } from 'src/infra/prisma/repositories/user';
 import { UserChannelPrismaRepository } from 'src/infra/prisma/repositories/user-channel';
+import { PrismaTransactionManager } from 'src/infra/prisma/transaction-manager';
 import { authenticationFactory, connectToWhatsappFactory } from './authentication';
 import { createChannelFactory } from './channel';
 import { createClientFactory } from './client/create-client.factory';
@@ -19,6 +20,9 @@ import { createUserChannelFactory } from './user-channel';
     UserPrismaRepository,
     ChannelPrismaRepository,
     UserChannelPrismaRepository,
+
+    //prismaTransactionManager
+    PrismaTransactionManager,
 
     //whatsapp
     connectToWhatsappFactory,
