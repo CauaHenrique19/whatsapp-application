@@ -9,7 +9,8 @@ export class ChannelPrismaRepository implements CreateChannelRepository {
     this.channelRepository = prisma.channel;
   }
 
-  async create(parameters: CreateChannelRepository.Parameters): Promise<CreateChannelRepository.Result> {
-    return await this.channelRepository.create({ data: parameters });
+  async create(parameters: CreateChannelRepository.Parameters, transaction?: Prisma.TransactionClient): Promise<CreateChannelRepository.Result> {
+    const client = transaction ? transaction.channel : this.channelRepository;
+    return await client.create({ data: parameters });
   }
 }

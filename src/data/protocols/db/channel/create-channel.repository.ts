@@ -2,7 +2,7 @@ import { ChannelModel } from 'src/domain/models';
 import { CreateChannelUseCase } from 'src/domain/usecases';
 
 export interface CreateChannelRepository {
-  create(parameters: CreateChannelRepository.Parameters): Promise<CreateChannelRepository.Result>;
+  create(parameters: CreateChannelRepository.Parameters, transaction?): Promise<CreateChannelRepository.Result>;
 }
 
 export namespace CreateChannelRepository {

@@ -9,8 +9,12 @@ export class UserChannelPrismaRepository implements CreateUserChannelRepository 
     this.userChannelRepository = prisma.userChannel;
   }
 
-  async create(parameters: CreateUserChannelRepository.Parameters): Promise<CreateUserChannelRepository.Result> {
-    await this.userChannelRepository.createMany({
+  async create(
+    parameters: CreateUserChannelRepository.Parameters,
+    transaction?: Prisma.TransactionClient,
+  ): Promise<CreateUserChannelRepository.Result> {
+    const client = transaction ? transaction.userChannel : this.userChannelRepository;
+    await client.createMany({
       data: parameters,
     });
   }
