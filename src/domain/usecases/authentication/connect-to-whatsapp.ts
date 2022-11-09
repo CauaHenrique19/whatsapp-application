@@ -6,7 +6,7 @@ export interface ConnectToWhatsapp {
 
 export namespace ConnectToWhatsapp {
   export type Parameters = {
-    clientId: string;
+    clientId: number;
     observer: ObserverInterface<{ qrCode: string }>;
   };
   export type Result = {
