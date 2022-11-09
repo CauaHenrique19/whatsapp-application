@@ -8,6 +8,7 @@ import { PrismaTransactionManager } from 'src/infra/prisma/transaction-manager';
 import { authenticationFactory, connectToWhatsappFactory } from './authentication';
 import { createChannelFactory } from './channel';
 import { createClientFactory } from './client/create-client.factory';
+import { emitMessagesFactory } from './message';
 import { createUserFactory, loadUserByEmailFactory } from './user';
 import { createUserChannelFactory } from './user-channel';
 
@@ -42,6 +43,9 @@ import { createUserChannelFactory } from './user-channel';
 
     //userChannel
     createUserChannelFactory,
+
+    //messages
+    emitMessagesFactory,
   ],
   exports: [
     //whatsapp
@@ -62,6 +66,9 @@ import { createUserChannelFactory } from './user-channel';
 
     //userChannel
     createUserChannelFactory,
+
+    //messages
+    emitMessagesFactory,
   ],
 })
 export class FactoryModule {}
