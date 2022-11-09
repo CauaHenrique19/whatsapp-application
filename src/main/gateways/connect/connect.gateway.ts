@@ -7,16 +7,22 @@ import {
   WebSocketServer,
   WebSocketGateway,
   ConnectedSocket,
+  WsResponse,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
+import { MessageModel } from 'src/domain/models';
 import { Observer } from 'src/infra/observer/observer';
 import { controllerAdapter } from 'src/main/adapters';
+import { BuildEmitMessageGatewayFactory } from 'src/main/factories/gateways/message';
 import { BuildConnectToWhatsappGatewayFactory } from '../../factories/gateways/authentication';
 import { ConnectToWhatsappDTO } from './dtos';
 
 @WebSocketGateway()
 export class ConnectGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private readonly buildConnectToWhatsappGatewayFactory: BuildConnectToWhatsappGatewayFactory) {}
+  constructor(
+    private readonly buildConnectToWhatsappGatewayFactory: BuildConnectToWhatsappGatewayFactory,
+    private readonly buildEmitMessageGatewayFactory: BuildEmitMessageGatewayFactory,
+  ) {}
 
   @WebSocketServer()
   server: Server;
@@ -47,6 +53,21 @@ export class ConnectGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
     return {
       event,
+      data: response,
+    };
+  }
+
+  @SubscribeMessage('allow_receive_messages')
+  async allowReceiveMessages(@MessageBody() data: ConnectToWhatsappDTO, @ConnectedSocket() client: Socket): Promise<WsResponse<any>> {
+    const observer = new Observer<MessageModel>((message) => {
+      console.log(message);
+    });
+
+    const token = client.request.headers.authorization;
+    const response = await controllerAdapter(this.buildEmitMessageGatewayFactory.build(), { data, token, observer });
+
+    return {
+      event: 'result_allow_receive_messages',
       data: response,
     };
   }
