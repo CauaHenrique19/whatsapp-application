@@ -5,9 +5,7 @@ export class Multiton<T> implements MultitonInterface<T> {
 
   public addInstance(instanceToAdd: TypeMultiton<T>): Promise<TypeMultiton<T>> {
     return new Promise<TypeMultiton<T>>((resolve, reject) => {
-      const instanceInList = this.instances.find(
-        (instance) => instance.id === instanceToAdd.id,
-      );
+      const instanceInList = this.instances.find((instance) => instance.id === instanceToAdd.id);
       if (instanceInList) {
         reject();
       }
@@ -17,7 +15,7 @@ export class Multiton<T> implements MultitonInterface<T> {
     });
   }
 
-  public getInstance(id: string): Promise<TypeMultiton<T>> {
+  public getInstance(id: number): Promise<TypeMultiton<T>> {
     return new Promise<TypeMultiton<T>>((resolve) => {
       const instance = this.instances.find((instance) => instance.id === id);
       resolve(instance);

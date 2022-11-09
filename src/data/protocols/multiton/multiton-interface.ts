@@ -8,8 +8,8 @@ export interface MultitonInterface<T> {
   addInstance(instanceToAdd: TypeMultiton<T>): Promise<TypeMultiton<T>>;
 
   /** 
-      @param {string} id Id to search instance
+      @param {number} id Id to search instance
       @returns {TypeMultiton<T>} union of instance and id used to search (if value has been found)
     */
-  getInstance(id: string): Promise<TypeMultiton<T>>;
+  getInstance(id: number): Promise<TypeMultiton<T>>;
 }

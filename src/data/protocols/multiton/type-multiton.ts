@@ -1,4 +1,4 @@
 export interface TypeMultiton<T> {
-  id: string;
+  id: number;
   instance: T;
 }
