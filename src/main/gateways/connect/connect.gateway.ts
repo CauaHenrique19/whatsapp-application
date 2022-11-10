@@ -38,12 +38,8 @@ export class ConnectGateway implements OnGatewayConnection, OnGatewayDisconnect 
   @SubscribeMessage('get_qr_code')
   @UsePipes(new ValidationPipe({ whitelist: true, skipUndefinedProperties: true }))
   async listenForMessages(@MessageBody() data: ConnectToWhatsappDTO, @ConnectedSocket() client: Socket) {
-    const observer = new Observer<{ qrCode: string }>((qrCode) => {
-      client.emit('new_qr_code', qrCode);
-    });
-
     const token = client.request.headers.authorization;
-    const response = await controllerAdapter(this.buildConnectToWhatsappGatewayFactory.build(), { data, observer, token });
+    const response = await controllerAdapter(this.buildConnectToWhatsappGatewayFactory.build(), { data, token });
 
     let event = 'new_qr_code';
 
@@ -59,12 +55,8 @@ export class ConnectGateway implements OnGatewayConnection, OnGatewayDisconnect 
 
   @SubscribeMessage('allow_receive_messages')
   async allowReceiveMessages(@MessageBody() data: ConnectToWhatsappDTO, @ConnectedSocket() client: Socket): Promise<WsResponse<any>> {
-    const observer = new Observer<MessageModel>((message) => {
-      console.log(message);
-    });
-
     const token = client.request.headers.authorization;
-    const response = await controllerAdapter(this.buildEmitMessageGatewayFactory.build(), { data, token, observer });
+    const response = await controllerAdapter(this.buildEmitMessageGatewayFactory.build(), { data, token });
 
     return {
       event: 'result_allow_receive_messages',
