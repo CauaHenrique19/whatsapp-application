@@ -5,6 +5,7 @@ import { ClientPrismaRepository } from 'src/infra/prisma/repositories/client';
 import { UserPrismaRepository } from 'src/infra/prisma/repositories/user';
 import { UserChannelPrismaRepository } from 'src/infra/prisma/repositories/user-channel';
 import { PrismaTransactionManager } from 'src/infra/prisma/transaction-manager';
+import { SocketIoAdapter } from 'src/infra/websocket/socket-io';
 import { authenticationFactory, connectToWhatsappFactory } from './authentication';
 import { createChannelFactory } from './channel';
 import { createClientFactory } from './client/create-client.factory';
@@ -14,6 +15,8 @@ import { createUserChannelFactory } from './user-channel';
 
 @Module({
   providers: [
+    SocketIoAdapter,
+
     MultitonProvider,
 
     //repositories
