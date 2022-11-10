@@ -5,5 +5,4 @@ export interface ControllerData<T = any> {
   data: T;
   token?: string;
   user?: UserModel;
-  observer?: ObserverInterface<any>;
 }
