@@ -6,10 +6,12 @@ export class EmitMessages implements EmitMessagesUseCase {
   constructor(private readonly multiton: MultitonInterface<WhatsappClientInterface>) {}
 
   async emit(parameters: EmitMessagesUseCase.Parameters): Promise<EmitMessagesUseCase.Result> {
-    const { clientId, observer } = parameters;
+    const { clientId } = parameters;
 
     const client = await this.multiton.getInstance(clientId);
-    client.instance.onMessage((message) => observer.notify(message));
+    client.instance.onMessage((message) => {
+      //todo websocket logic
+    });
 
     let result = true;
 

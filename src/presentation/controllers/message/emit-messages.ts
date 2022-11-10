@@ -8,7 +8,7 @@ export class EmitMessagesGateway implements Gateway {
   async handle(parameters: ControllerData<EmitMessagesGateway.Parameters>): Promise<HttpResponse> {
     try {
       const { clientId } = parameters.data;
-      const result = await this.emitMessages.emit({ clientId, observer: parameters.observer });
+      const result = await this.emitMessages.emit({ clientId });
       return ok({ result });
     } catch (error) {
       return serverError(error);
