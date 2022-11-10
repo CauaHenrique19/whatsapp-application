@@ -1,4 +1,3 @@
-import { ObserverInterface } from 'src/data/protocols/observer';
 import { ConnectToWhatsapp } from 'src/domain/usecases';
 import { ok, serverError } from 'src/presentation/helpers';
 import { ControllerData, Gateway, HttpResponse } from 'src/presentation/protocols';
@@ -10,7 +9,7 @@ export class ConnectToWhatsappGateway implements Gateway {
     try {
       const { clientId } = data.data;
 
-      const result = await this.connectToWhatsapp.connect({ clientId, observer: data.observer });
+      const result = await this.connectToWhatsapp.connect({ clientId });
       return ok(result);
     } catch (error) {
       return serverError(error);
@@ -21,6 +20,5 @@ export class ConnectToWhatsappGateway implements Gateway {
 export namespace ConnectToWhatsappGateway {
   export type Parameters = {
     clientId: number;
-    observer: ObserverInterface<{ qrCode: string }>;
   };
 }
