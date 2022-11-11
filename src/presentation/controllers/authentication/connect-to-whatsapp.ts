@@ -1,11 +1,11 @@
 import { ConnectToWhatsapp } from 'src/domain/usecases';
 import { ok, serverError } from 'src/presentation/helpers';
-import { ControllerData, Gateway, HttpResponse } from 'src/presentation/protocols';
+import { Controller, ControllerData, HttpResponse } from 'src/presentation/protocols';
 
-export class ConnectToWhatsappGateway implements Gateway {
+export class ConnectToWhatsappController implements Controller {
   constructor(private readonly connectToWhatsapp: ConnectToWhatsapp) {}
 
-  async handle(data: ControllerData<ConnectToWhatsappGateway.Parameters>): Promise<HttpResponse> {
+  async handle(data: ControllerData<ConnectToWhatsappController.Parameters>): Promise<HttpResponse> {
     try {
       const { clientId } = data.data;
 
@@ -17,7 +17,7 @@ export class ConnectToWhatsappGateway implements Gateway {
   }
 }
 
-export namespace ConnectToWhatsappGateway {
+export namespace ConnectToWhatsappController {
   export type Parameters = {
     clientId: number;
   };

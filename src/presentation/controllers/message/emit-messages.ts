@@ -1,11 +1,11 @@
 import { EmitMessagesUseCase } from 'src/domain/usecases';
 import { ok, serverError } from 'src/presentation/helpers';
-import { ControllerData, Gateway, HttpResponse } from 'src/presentation/protocols';
+import { Controller, ControllerData, HttpResponse } from 'src/presentation/protocols';
 
-export class EmitMessagesGateway implements Gateway {
+export class EmitMessagesController implements Controller {
   constructor(private readonly emitMessages: EmitMessagesUseCase) {}
 
-  async handle(parameters: ControllerData<EmitMessagesGateway.Parameters>): Promise<HttpResponse> {
+  async handle(parameters: ControllerData<EmitMessagesController.Parameters>): Promise<HttpResponse> {
     try {
       const { clientId } = parameters.data;
       const result = await this.emitMessages.emit({ clientId });
@@ -16,7 +16,7 @@ export class EmitMessagesGateway implements Gateway {
   }
 }
 
-export namespace EmitMessagesGateway {
+export namespace EmitMessagesController {
   export type Parameters = {
     clientId: number;
   };
