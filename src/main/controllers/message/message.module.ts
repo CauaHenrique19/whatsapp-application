@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
+import { BuildEmitMessageControllerFactory } from 'src/main/factories/controllers';
 import { FactoryModule } from 'src/main/factories/usecases/factory.module';
 import { MessageController } from './message.controller';
-import { BuildEmitMessageGatewayFactory } from 'src/main/factories/gateways/message';
 
 @Module({
   imports: [FactoryModule],
   controllers: [MessageController],
-  providers: [BuildEmitMessageGatewayFactory],
+  providers: [BuildEmitMessageControllerFactory],
 })
 export class MessageModule {}

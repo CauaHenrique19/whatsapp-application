@@ -1,14 +1,14 @@
 import { Body, Controller, Post, Response, Headers } from '@nestjs/common';
 import { controllerAdapter } from 'src/main/adapters';
-import { BuildEmitMessageGatewayFactory } from 'src/main/factories/gateways/message';
+import { BuildEmitMessageControllerFactory } from 'src/main/factories/controllers/message';
 
 @Controller('messages')
 export class MessageController {
-  constructor(private readonly buildEmitMessageGatewayFactory: BuildEmitMessageGatewayFactory) {}
+  constructor(private readonly buildEmitMessageControllerFactory: BuildEmitMessageControllerFactory) {}
 
   @Post('allow-receive')
   async allowReceiveMessages(@Body() data, @Headers('authorization') token, @Response() response) {
-    const result = await controllerAdapter(this.buildEmitMessageGatewayFactory.build(), { data, token });
+    const result = await controllerAdapter(this.buildEmitMessageControllerFactory.build(), { data, token });
     return response.status(result.statusCode).json(result);
   }
 }
