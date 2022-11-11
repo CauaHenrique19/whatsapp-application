@@ -5,9 +5,8 @@ import { ClientModule } from './controllers/client/client.module';
 import { MessageModule } from './controllers/message/message.module';
 import { UserChannelModule } from './controllers/user-channel/user-channel.module';
 import { UserModule } from './controllers/user/user.module';
-import { ConnectModule } from './gateways';
 
 @Module({
-  imports: [ConnectModule, ClientModule, UserModule, AuthenticationModule, ChannelModule, UserChannelModule, MessageModule],
+  imports: [ClientModule, UserModule, AuthenticationModule, ChannelModule, UserChannelModule, MessageModule],
 })
 export class AppModule {}
