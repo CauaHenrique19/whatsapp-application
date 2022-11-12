@@ -1,8 +1,6 @@
 export interface ChatModel {
-  name: string;
-  unreadCount: number;
-  pinned: boolean;
-  isMuted: boolean;
-  muteExpiration: number;
-  isGroup: boolean;
+  id: number;
+  numberParticipant: string;
+  userId: number;
+  status: number;
 }

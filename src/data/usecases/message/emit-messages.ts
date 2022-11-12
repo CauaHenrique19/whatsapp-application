@@ -2,7 +2,7 @@ import { WebsocketEventsEnum } from 'src/data/enums';
 import { MultitonInterface } from 'src/data/protocols/multiton';
 import { WebsocketInterface } from 'src/data/protocols/websocket';
 import { WhatsappClientInterface } from 'src/data/protocols/whatsapp';
-import { MessageModel } from 'src/domain/models';
+import { WhatsappMessageModel } from 'src/domain/models';
 import { EmitMessagesUseCase } from 'src/domain/usecases';
 
 export class EmitMessages implements EmitMessagesUseCase {
@@ -13,7 +13,7 @@ export class EmitMessages implements EmitMessagesUseCase {
 
     const client = await this.multiton.getInstance(clientId);
     client.instance.onMessage((message) => {
-      this.websocketAdapter.emitEvent<MessageModel>(WebsocketEventsEnum.NEW_MESSAGE, message);
+      this.websocketAdapter.emitEvent<WhatsappMessageModel>(WebsocketEventsEnum.NEW_MESSAGE, message);
     });
 
     let result = true;

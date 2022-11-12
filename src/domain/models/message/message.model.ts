@@ -1,12 +1,10 @@
-import { SenderModel } from '..';
+import { ChatModel } from '../chat';
 
 export interface MessageModel {
-  id: string;
-  type: string;
-  from: string;
+  id: number;
   content: string;
-  isGroup: boolean;
-  isStatus: boolean;
-  time: Date;
-  sender: SenderModel;
+  createdAt: Date;
+  chatId: number;
+  from: string;
+  chat: ChatModel;
 }
