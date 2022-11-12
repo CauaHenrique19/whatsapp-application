@@ -1,10 +1,10 @@
-import { ChatEnum } from 'src/data/enums';
+import { ChatStatusEnum } from 'src/data/enums';
 import { UserModel } from '../user';
 
 export interface ChatModel {
-  id: number;
+  id?: number;
   numberParticipant: string;
-  userId: number;
-  status: ChatEnum;
-  user: UserModel;
+  userId?: number;
+  status: ChatStatusEnum;
+  user?: UserModel;
 }
