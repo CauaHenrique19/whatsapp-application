@@ -8,6 +8,13 @@ export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
   onMessage(cb: (message: MessageModel) => void) {
     this.client.on('message', async (message) => {
       const contact = await message.getContact();
+
+      const messageIsStatusOrFromGroup = message.isStatus || message.from.includes('@g.us') || contact.isGroup;
+
+      if (messageIsStatusOrFromGroup) {
+        return;
+      }
+
       const urlContactImage = await contact.getProfilePicUrl();
 
       const formattedMessage: MessageModel = {
@@ -17,7 +24,7 @@ export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
         id: message.id.id,
         time: new Date(),
         isStatus: message.isStatus,
-        isGroup: contact.isGroup,
+        isGroup: contact.isGroup || message.from.includes('@g.us'),
         sender: {
           id: contact.id.user,
           profileName: contact.pushname,
@@ -27,7 +34,6 @@ export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
         },
       };
 
-      //console.log(message);
       cb(formattedMessage);
     });
   }
@@ -36,16 +42,14 @@ export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
     const chats = await this.client.getChats();
     const unreadChats = chats.filter((chat) => chat.unreadCount !== 0);
 
-    const fomattedChats: ChatModel[] = unreadChats.map(
-      (chat: WhatsappWebChat & { pinned: boolean }) => ({
-        name: chat.name,
-        isGroup: chat.isGroup,
-        isMuted: chat.isMuted,
-        unreadCount: chat.unreadCount,
-        pinned: chat.pinned,
-        muteExpiration: chat.muteExpiration,
-      }),
-    );
+    const fomattedChats: ChatModel[] = unreadChats.map((chat: WhatsappWebChat & { pinned: boolean }) => ({
+      name: chat.name,
+      isGroup: chat.isGroup,
+      isMuted: chat.isMuted,
+      unreadCount: chat.unreadCount,
+      pinned: chat.pinned,
+      muteExpiration: chat.muteExpiration,
+    }));
 
     return fomattedChats;
   }
