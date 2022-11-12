@@ -70,10 +70,10 @@ model UserChannel {
 model Chat {
   id                Int    @id @default(autoincrement())
   numberParticipant String @map("number_participant")
-  userId            Int    @map("user_id")
+  userId            Int?   @map("user_id")
   status            Int
 
-  user User @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
 
   @@map("tb_chat")
 }
