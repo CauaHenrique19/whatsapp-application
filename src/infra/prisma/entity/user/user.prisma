@@ -11,6 +11,7 @@ model User {
 
   client   Client    @relation(fields: [clientId], references: [id])
   channels Channel[] @relation("tb_user_in_channel")
+  chats    Chat[]
 
   @@map("tb_user")
 }
