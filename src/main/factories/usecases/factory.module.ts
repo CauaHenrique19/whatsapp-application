@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MultitonProvider } from 'src/infra/multiton';
 import { ChannelPrismaRepository } from 'src/infra/prisma/repositories/channel';
+import { ChatPrismaRepository } from 'src/infra/prisma/repositories/chat';
 import { ClientPrismaRepository } from 'src/infra/prisma/repositories/client';
 import { UserPrismaRepository } from 'src/infra/prisma/repositories/user';
 import { UserChannelPrismaRepository } from 'src/infra/prisma/repositories/user-channel';
@@ -8,6 +9,7 @@ import { PrismaTransactionManager } from 'src/infra/prisma/transaction-manager';
 import { SocketIoAdapter } from 'src/infra/websocket/socket-io';
 import { authenticationFactory, connectToWhatsappFactory } from './authentication';
 import { createChannelFactory } from './channel';
+import { createChatFactory } from './chat';
 import { createClientFactory } from './client/create-client.factory';
 import { emitMessagesFactory } from './message';
 import { createUserFactory, loadUserByEmailFactory } from './user';
@@ -24,6 +26,7 @@ import { createUserChannelFactory } from './user-channel';
     UserPrismaRepository,
     ChannelPrismaRepository,
     UserChannelPrismaRepository,
+    ChatPrismaRepository,
 
     //prismaTransactionManager
     PrismaTransactionManager,
@@ -49,6 +52,9 @@ import { createUserChannelFactory } from './user-channel';
 
     //messages
     emitMessagesFactory,
+
+    //chat
+    createChatFactory,
   ],
   exports: [
     //whatsapp
@@ -72,6 +78,9 @@ import { createUserChannelFactory } from './user-channel';
 
     //messages
     emitMessagesFactory,
+
+    //chat
+    createChatFactory,
   ],
 })
 export class FactoryModule {}
