@@ -1,11 +1,11 @@
 import { WhatsappClientInterface } from 'src/data/protocols/whatsapp';
-import { ChatModel, MessageModel } from 'src/domain/models';
+import { WhatsappChatModel, WhatsappMessageModel } from 'src/domain/models';
 import { Client, Chat as WhatsappWebChat } from 'whatsapp-web.js';
 
 export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
   constructor(private readonly client: Client) {}
 
-  onMessage(cb: (message: MessageModel) => void) {
+  onMessage(cb: (message: WhatsappMessageModel) => void) {
     this.client.on('message', async (message) => {
       const contact = await message.getContact();
 
@@ -17,7 +17,7 @@ export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
 
       const urlContactImage = await contact.getProfilePicUrl();
 
-      const formattedMessage: MessageModel = {
+      const formattedMessage: WhatsappMessageModel = {
         type: message.type,
         content: message.body,
         from: message.from,
@@ -38,11 +38,11 @@ export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
     });
   }
 
-  async getUnreadChats(): Promise<ChatModel[]> {
+  async getUnreadChats(): Promise<WhatsappChatModel[]> {
     const chats = await this.client.getChats();
     const unreadChats = chats.filter((chat) => chat.unreadCount !== 0);
 
-    const fomattedChats: ChatModel[] = unreadChats.map((chat: WhatsappWebChat & { pinned: boolean }) => ({
+    const fomattedChats: WhatsappChatModel[] = unreadChats.map((chat: WhatsappWebChat & { pinned: boolean }) => ({
       name: chat.name,
       isGroup: chat.isGroup,
       isMuted: chat.isMuted,
