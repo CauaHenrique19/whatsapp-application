@@ -25,11 +25,19 @@ export class ChatPrismaRepository
   async getByNumberParticipant(
     parameters: GetChatByNumberParticipantRepository.Parameters,
   ): Promise<GetChatByNumberParticipantRepository.Result> {
-    return await this.chatRepository.findFirst({
+    const result = await this.chatRepository.findFirst({
       where: {
         numberParticipant: parameters.number,
       },
+      include: {
+        user: true,
+      },
     });
+
+    return {
+      ...result,
+      user: result.user,
+    };
   }
 
   async getById(parameters: GetChatByIdRepository.Parameters): Promise<GetChatByIdRepository.Result> {

@@ -27,12 +27,16 @@ export class ChannelPrismaRepository implements CreateChannelRepository, GetChan
       include: {
         users: {
           select: {
-            id: true,
-            email: true,
-            name: true,
-            lastName: true,
-            status: true,
-            createdAt: true,
+            User: {
+              select: {
+                id: true,
+                email: true,
+                name: true,
+                lastName: true,
+                status: true,
+                createdAt: true,
+              },
+            },
           },
           where: {
             status: UserStatusEnum.ACTIVE,
@@ -41,6 +45,11 @@ export class ChannelPrismaRepository implements CreateChannelRepository, GetChan
       },
     });
 
-    return channels;
+    const formattedChannels = channels.map((channel) => ({
+      ...channel,
+      users: channel.users.map((user) => user.User),
+    }));
+
+    return formattedChannels;
   }
 }
