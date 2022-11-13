@@ -8,10 +8,10 @@ export class CreateChannelController implements Controller {
 
   async handle(parameters: ControllerData<CreateChannelUseCase.Parameters>): Promise<HttpResponse> {
     try {
-      const mandatoryFields: CreateChannelController.MandatoryFields[] = ['clientId', 'name', 'users'];
+      const mandatoryFields: CreateChannelController.MandatoryFields[] = ['clientId', 'name', 'users', 'description'];
 
       for (const field of mandatoryFields) {
-        if (!parameters[field] === null) {
+        if (parameters.data[field] === null || parameters.data[field] === undefined) {
           return badRequest(new MissingParamError(field));
         }
       }
@@ -20,6 +20,7 @@ export class CreateChannelController implements Controller {
         clientId: parameters.data.clientId,
         name: parameters.data.name,
         users: parameters.data.users,
+        description: parameters.data.description,
       });
 
       return ok(channel);
