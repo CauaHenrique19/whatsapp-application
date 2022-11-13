@@ -9,7 +9,7 @@ import { PrismaTransactionManager } from 'src/infra/prisma/transaction-manager';
 import { SocketIoAdapter } from 'src/infra/websocket/socket-io';
 import { authenticationFactory, connectToWhatsappFactory } from './authentication';
 import { createChannelFactory } from './channel';
-import { createChatFactory } from './chat';
+import { attachChatToUserFactory, createChatFactory } from './chat';
 import { createClientFactory } from './client/create-client.factory';
 import { emitMessagesFactory } from './message';
 import { createUserFactory, loadUserByEmailFactory } from './user';
@@ -55,6 +55,7 @@ import { createUserChannelFactory } from './user-channel';
 
     //chat
     createChatFactory,
+    attachChatToUserFactory,
   ],
   exports: [
     //whatsapp
@@ -81,6 +82,7 @@ import { createUserChannelFactory } from './user-channel';
 
     //chat
     createChatFactory,
+    attachChatToUserFactory,
   ],
 })
 export class FactoryModule {}
