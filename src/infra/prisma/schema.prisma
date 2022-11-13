@@ -40,6 +40,7 @@ model User {
   client   Client    @relation(fields: [clientId], references: [id])
   channels Channel[] @relation("tb_user_in_channel")
   chats    Chat[]
+  ChatLog  ChatLog[]
 
   @@map("tb_user")
 }
@@ -52,9 +53,10 @@ model Channel {
   description String
   createdAt   DateTime @default(now()) @map("created_at")
 
-  client Client @relation(fields: [clientId], references: [id])
-  users  User[] @relation("tb_user_in_channel")
-  Chat   Chat[]
+  client  Client    @relation(fields: [clientId], references: [id])
+  users   User[]    @relation("tb_user_in_channel")
+  Chat    Chat[]
+  ChatLog ChatLog[]
 
   @@map("tb_channel")
 }
@@ -76,8 +78,24 @@ model Chat {
   status            Int
   channelId         Int?   @map("channel_id")
 
-  user    User?    @relation(fields: [userId], references: [id])
-  channel Channel? @relation(fields: [channelId], references: [id])
+  user    User?     @relation(fields: [userId], references: [id])
+  channel Channel?  @relation(fields: [channelId], references: [id])
+  ChatLog ChatLog[]
 
   @@map("tb_chat")
+}
+
+model ChatLog {
+  id         Int      @id @default(autoincrement())
+  chatId     Int?     @map("chat_id")
+  userId     Int?     @map("user_id")
+  channelId  Int?     @map("channel_id")
+  actionType Int      @map("action_type")
+  createdAt  DateTime @map("created_at")
+
+  user    User?    @relation(fields: [userId], references: [id])
+  channel Channel? @relation(fields: [channelId], references: [id])
+  chat    Chat?    @relation(fields: [chatId], references: [id])
+
+  @@map("tb_chat_log")
 }
