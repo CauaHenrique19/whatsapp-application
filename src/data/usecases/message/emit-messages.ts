@@ -38,6 +38,7 @@ export class EmitMessages implements EmitMessagesUseCase {
       if (idSelectedChannel && !chat.channelId) {
         const channel = channels.find((channel) => channel.id === idSelectedChannel);
         chat.channelId = idSelectedChannel;
+        chat.status = ChatStatusEnum.WAITING_USER;
 
         await this.updateChatRepository.update(chat);
 
@@ -52,19 +53,19 @@ export class EmitMessages implements EmitMessagesUseCase {
       if (chat) {
         if (chat.status === ChatStatusEnum.FINISHED) {
           chat.userId = null;
-          chat.status = ChatStatusEnum.WAITING_USER;
+          chat.status = ChatStatusEnum.WAITING_CHANNEL;
 
           finalChat = await this.updateChatRepository.update(chat);
-          await this.sendAutomaticMessage(numberParticipant, channels, client);
+          await this.sendSelectChannelAutomaticMessage(numberParticipant, channels, client);
         }
       } else {
         const chat: ChatModel = {
           numberParticipant: numberParticipant,
-          status: ChatStatusEnum.WAITING_USER,
+          status: ChatStatusEnum.WAITING_CHANNEL,
         };
 
         finalChat = await this.createChatRepository.create(chat);
-        await this.sendAutomaticMessage(numberParticipant, channels, client);
+        await this.sendSelectChannelAutomaticMessage(numberParticipant, channels, client);
       }
 
       //SAVE RECEIVED MESSAGE
@@ -80,7 +81,11 @@ export class EmitMessages implements EmitMessagesUseCase {
     return result;
   }
 
-  async sendAutomaticMessage(number: string, channels: GetChannelsByClientIdRepository.Result, client: WhatsappClientInterface) {
+  async sendSelectChannelAutomaticMessage(
+    number: string,
+    channels: GetChannelsByClientIdRepository.Result,
+    client: WhatsappClientInterface,
+  ) {
     const rowsSections = channels.map((channel) => {
       return {
         id: channel.id.toString(),
@@ -89,7 +94,7 @@ export class EmitMessages implements EmitMessagesUseCase {
       };
     });
 
-    const texto = `👋 Olá Fulano de Tal, Tudo Bem? Esperamos que sim!
+    const text = `👋 Olá Fulano de Tal, Tudo Bem? Esperamos que sim!
     \nPara continuarmos o seu atendimento será necessário que você selecione o canal relacionado ao seu atendimento.
     \nLembrando que sua resposta só será computada se você selecionar uma das opções na lista abaixo.`;
 
@@ -101,7 +106,7 @@ export class EmitMessages implements EmitMessagesUseCase {
     ];
 
     const list: WhatsappList = {
-      body: texto,
+      body: text,
       buttonText: 'Visualizar Canais',
       sections,
       title: 'Triagem',
