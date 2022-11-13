@@ -3,8 +3,10 @@ model Chat {
     numberParticipant String @map("number_participant")
     userId            Int?   @map("user_id")
     status            Int
+    channelId         Int?   @map("channel_id")
 
-    user User? @relation(fields: [userId], references: [id])
+    user    User?    @relation(fields: [userId], references: [id])
+    channel Channel? @relation(fields: [channelId], references: [id])
 
     @@map("tb_chat")
 }
