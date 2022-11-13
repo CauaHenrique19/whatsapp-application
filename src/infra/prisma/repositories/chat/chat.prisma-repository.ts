@@ -1,7 +1,10 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import { CreateChatRepository, GetChatByNumberParticipantRepository, UpdateChatRepository } from 'src/data/protocols/db';
+import { GetChatByIdRepository } from 'src/data/protocols/db/chat/get-chat-by-id.repository';
 
-export class ChatPrismaRepository implements CreateChatRepository, GetChatByNumberParticipantRepository, UpdateChatRepository {
+export class ChatPrismaRepository
+  implements CreateChatRepository, GetChatByNumberParticipantRepository, GetChatByIdRepository, UpdateChatRepository
+{
   private chatRepository: Prisma.ChatDelegate<Prisma.RejectOnNotFound | Prisma.RejectPerOperation>;
 
   constructor() {
@@ -25,6 +28,14 @@ export class ChatPrismaRepository implements CreateChatRepository, GetChatByNumb
     return await this.chatRepository.findFirst({
       where: {
         numberParticipant: parameters.number,
+      },
+    });
+  }
+
+  async getById(parameters: GetChatByIdRepository.Parameters): Promise<GetChatByIdRepository.Result> {
+    return await this.chatRepository.findFirst({
+      where: {
+        id: parameters.id,
       },
     });
   }
