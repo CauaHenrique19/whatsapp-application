@@ -5,6 +5,6 @@ export interface UpdateChatUseCase {
 }
 
 export namespace UpdateChatUseCase {
-  export type Parameters = Omit<ChatModel, 'user' | 'numberParticipant'>;
-  export type Result = Omit<ChatModel, 'user'>;
+  export type Parameters = Omit<ChatModel, 'user' | 'numberParticipant' | 'channel'>;
+  export type Result = Omit<ChatModel, 'user' | 'channel'>;
 }
