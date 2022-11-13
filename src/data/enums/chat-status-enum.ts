@@ -1,5 +1,6 @@
 export enum ChatStatusEnum {
-  WAITING_USER = 1,
-  IN_PROGRESS = 2,
-  FINISHED = 3,
+  WAITING_CHANNEL = 1,
+  WAITING_USER = 2,
+  IN_PROGRESS = 3,
+  FINISHED = 4,
 }
