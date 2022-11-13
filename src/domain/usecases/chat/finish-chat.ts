@@ -7,6 +7,7 @@ export interface FinishChatUseCase {
 export namespace FinishChatUseCase {
   export type Parameters = {
     chatId: number;
+    clientId: number;
     userId: number;
   };
   export type Result = Omit<ChatModel, 'user' | 'channel'>;
