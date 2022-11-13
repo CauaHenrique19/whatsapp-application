@@ -1,6 +1,6 @@
 import { WhatsappClientInterface } from 'src/data/protocols/whatsapp';
-import { WhatsappChatModel, WhatsappMessageModel } from 'src/domain/models';
-import { Client, Chat as WhatsappWebChat } from 'whatsapp-web.js';
+import { WhatsappChatModel, WhatsappList, WhatsappMessageModel } from 'src/domain/models';
+import { Client, Chat as WhatsappWebChat, List } from 'whatsapp-web.js';
 
 export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
   constructor(private readonly client: Client) {}
@@ -25,6 +25,7 @@ export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
         time: new Date(),
         isStatus: message.isStatus,
         isGroup: contact.isGroup || message.from.includes('@g.us'),
+        selectedRowId: message.selectedRowId,
         sender: {
           id: contact.id.user,
           profileName: contact.pushname,
@@ -52,5 +53,17 @@ export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
     }));
 
     return fomattedChats;
+  }
+
+  async sendMessage(number: string, content: string | WhatsappList) {
+    const contactInfo = await this.client.getNumberId(number);
+    let finalContent = content;
+
+    if (typeof content === 'object') {
+      const listContent = content as WhatsappList;
+      finalContent = new List(listContent.body, listContent.buttonText, listContent.sections);
+    }
+
+    await this.client.sendMessage(contactInfo._serialized, finalContent);
   }
 }
