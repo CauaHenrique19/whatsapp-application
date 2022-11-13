@@ -8,15 +8,19 @@ export class AttachChatToUserController implements Controller {
 
   async handle(parameters: ControllerData<AttachChatToUserController.Parameters>): Promise<HttpResponse> {
     try {
+      const { data, user } = parameters;
       const mandatoryFields: AttachChatToUserController.MandatoryFields[] = ['chatId'];
 
       for (const field of mandatoryFields) {
-        if (parameters.data[field] === null || parameters.data[field] === undefined) {
+        if (data[field] === null || data[field] === undefined) {
           return badRequest(new MissingParamError(field));
         }
       }
 
-      const result = await this.attachChatToUser.attachToUser({ ...parameters.data, userId: parameters.user.id });
+      const result = await this.attachChatToUser.attachToUser({
+        ...data,
+        user: { id: user.id, clientId: user.clientId, name: user.name, lastName: user.lastName },
+      });
       return ok(result);
     } catch (error) {
       return serverError(error);

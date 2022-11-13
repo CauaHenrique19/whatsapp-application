@@ -7,7 +7,12 @@ export interface AttachChatToUserUseCase {
 export namespace AttachChatToUserUseCase {
   export type Parameters = {
     chatId: number;
-    userId: number;
+    user: {
+      id: number;
+      name: string;
+      lastName: string;
+      clientId: number;
+    };
   };
 
   export type Result = Omit<ChatModel, 'user' | 'channel'>;
