@@ -15,6 +15,7 @@ export class DbCreateChannel implements CreateChannelUseCase {
       clientId: parameters.clientId,
       name: parameters.name,
       status: ChannelStatusEnum.ACTIVE,
+      description: parameters.description,
       createdAt: new Date(),
     };
 

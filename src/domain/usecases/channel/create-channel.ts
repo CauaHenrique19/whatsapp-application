@@ -5,6 +5,6 @@ export interface CreateChannelUseCase {
 }
 
 export namespace CreateChannelUseCase {
-  export type Parameters = Pick<ChannelModel, 'clientId' | 'name'> & { users: number[] };
+  export type Parameters = Pick<ChannelModel, 'clientId' | 'name' | 'description'> & { users: number[] };
   export type Result = Omit<ChannelModel, 'client' | 'users' | 'createdAt'>;
 }

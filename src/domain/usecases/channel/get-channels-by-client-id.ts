@@ -15,6 +15,7 @@ export namespace GetChannelsByClientIdUseCase {
     clientId: number;
     status: number;
     createdAt: Date;
+    description: string;
     users: {
       id?: number;
       email: string;

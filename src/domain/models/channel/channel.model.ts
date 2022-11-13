@@ -7,6 +7,7 @@ export interface ChannelModel {
   clientId: number;
   status: number;
   createdAt: Date;
+  description: string;
   client: ClientModel;
   users: UserModel[];
 }
