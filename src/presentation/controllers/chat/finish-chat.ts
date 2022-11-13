@@ -16,7 +16,7 @@ export class FinishChatController implements Controller {
         }
       }
 
-      const result = await this.finishChat.finish(parameters.data);
+      const result = await this.finishChat.finish({ ...parameters.data, userId: parameters.user.id });
       return ok(result);
     } catch (error) {
       return serverError(error);
