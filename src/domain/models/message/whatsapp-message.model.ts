@@ -8,5 +8,6 @@ export interface WhatsappMessageModel {
   isGroup: boolean;
   isStatus: boolean;
   time: Date;
+  selectedRowId: string;
   sender: SenderModel;
 }
