@@ -4,3 +4,4 @@ export * from './channel-status-enum';
 export * from './user-channel-status-enum';
 export * from './websocket-events-enum';
 export * from './chat-status-enum';
+export * from './chat-log-type-action-enum';
