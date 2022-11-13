@@ -1,5 +1,6 @@
-import { ChatStatusEnum, WebsocketEventsEnum } from 'src/data/enums';
+import { ChatLogTypeActionEnum, ChatStatusEnum, WebsocketEventsEnum } from 'src/data/enums';
 import {
+  CreateChatLogRepository,
   CreateChatRepository,
   GetChannelsByClientIdRepository,
   GetChatByNumberParticipantRepository,
@@ -19,6 +20,7 @@ export class EmitMessages implements EmitMessagesUseCase {
     private readonly createChatRepository: CreateChatRepository,
     private readonly updateChatRepository: UpdateChatRepository,
     private readonly getChannelsByClientIdRepository: GetChannelsByClientIdRepository,
+    private readonly createChatLogRepository: CreateChatLogRepository,
   ) {}
 
   async emit(parameters: EmitMessagesUseCase.Parameters): Promise<EmitMessagesUseCase.Result> {
@@ -41,6 +43,14 @@ export class EmitMessages implements EmitMessagesUseCase {
         chat.status = ChatStatusEnum.WAITING_USER;
 
         await this.updateChatRepository.update(chat);
+        await this.createChatLogRepository.create([
+          {
+            chatId: finalChat.id,
+            actionType: ChatLogTypeActionEnum.DIRECTED_TO_CHANNEL,
+            channelId: idSelectedChannel,
+            createdAt: new Date(),
+          },
+        ]);
 
         await client.sendMessage(
           numberParticipant,
@@ -50,21 +60,35 @@ export class EmitMessages implements EmitMessagesUseCase {
         await client.sendMessage(numberParticipant, `❌ Você já foi redirecionado a um canal. Aguarde para ser atendido!`);
       }
 
-      if (chat) {
+      if (chat && numberParticipant === '5521990206939@c.us') {
         if (chat.status === ChatStatusEnum.FINISHED) {
           chat.userId = null;
           chat.status = ChatStatusEnum.WAITING_CHANNEL;
 
           finalChat = await this.updateChatRepository.update(chat);
+          await this.createChatLogRepository.create([
+            {
+              chatId: finalChat.id,
+              actionType: ChatLogTypeActionEnum.RESTARTED,
+              createdAt: new Date(),
+            },
+          ]);
           await this.sendSelectChannelAutomaticMessage(numberParticipant, channels, client);
         }
-      } else {
+      } else if (numberParticipant === '5521990206939@c.us') {
         const chat: ChatModel = {
           numberParticipant: numberParticipant,
           status: ChatStatusEnum.WAITING_CHANNEL,
         };
 
         finalChat = await this.createChatRepository.create(chat);
+        await this.createChatLogRepository.create([
+          {
+            chatId: finalChat.id,
+            actionType: ChatLogTypeActionEnum.CREATED,
+            createdAt: new Date(),
+          },
+        ]);
         await this.sendSelectChannelAutomaticMessage(numberParticipant, channels, client);
       }
 
