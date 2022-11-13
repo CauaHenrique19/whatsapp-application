@@ -33,16 +33,21 @@ export class EmitMessages implements EmitMessagesUseCase {
       const numberParticipant = message.from;
       const chat = await this.getChatByNumberParticipantRepository.getByNumberParticipant({ number: numberParticipant });
 
-      let finalChat: ChatModel = chat;
+      let finalChat: ChatModel | GetChatByNumberParticipantRepository.Result = chat;
+      let rooms: string[] = [];
 
       const idSelectedChannel = parseInt(message.selectedRowId);
+      const chatHasDirectedToChannel = chat.channelId;
 
-      if (idSelectedChannel && !chat.channelId) {
+      if (idSelectedChannel && !chatHasDirectedToChannel) {
         const channel = channels.find((channel) => channel.id === idSelectedChannel);
         chat.channelId = idSelectedChannel;
         chat.status = ChatStatusEnum.WAITING_USER;
 
-        await this.updateChatRepository.update(chat);
+        const chatToUpdate = chat;
+        delete chatToUpdate.user;
+
+        finalChat = await this.updateChatRepository.update(chatToUpdate);
         await this.createChatLogRepository.create([
           {
             chatId: finalChat.id,
@@ -56,14 +61,25 @@ export class EmitMessages implements EmitMessagesUseCase {
           numberParticipant,
           `✅ Você será redirecionado para o canal de ${channel.name}, e um dos nossos atendentes irá lhe atender em breve.`,
         );
-      } else if (idSelectedChannel && chat.channelId) {
+
+        const emailsOfUsersToReceiveMessage = channel.users.map((channel) => channel.email);
+        rooms = emailsOfUsersToReceiveMessage;
+      } else if (idSelectedChannel && chatHasDirectedToChannel) {
         await client.sendMessage(numberParticipant, `❌ Você já foi redirecionado a um canal. Aguarde para ser atendido!`);
+      }
+
+      if (numberParticipant === '5521990206939@c.us' && chatHasDirectedToChannel && chat.user) {
+        const user = chat.user;
+        rooms = [user.email];
       }
 
       if (chat && numberParticipant === '5521990206939@c.us') {
         if (chat.status === ChatStatusEnum.FINISHED) {
           chat.userId = null;
           chat.status = ChatStatusEnum.WAITING_CHANNEL;
+
+          const chatToUpdate = chat;
+          delete chatToUpdate.user;
 
           finalChat = await this.updateChatRepository.update(chat);
           await this.createChatLogRepository.create([
@@ -92,8 +108,14 @@ export class EmitMessages implements EmitMessagesUseCase {
         await this.sendSelectChannelAutomaticMessage(numberParticipant, channels, client);
       }
 
+      if (finalChat.status === ChatStatusEnum.WAITING_USER) {
+        const channel = channels.find((channel) => channel.id === finalChat.channelId);
+        const emailsOfUsersToReceiveMessage = channel.users.map((channel) => channel.email);
+        rooms = emailsOfUsersToReceiveMessage;
+      }
+
       //SAVE RECEIVED MESSAGE
-      this.websocketAdapter.emitEvent<WhatsappMessageModel>(WebsocketEventsEnum.NEW_MESSAGE, message);
+      this.websocketAdapter.emitEventToRooms<WhatsappMessageModel>(rooms, WebsocketEventsEnum.NEW_MESSAGE, message);
     });
 
     let result = true;
