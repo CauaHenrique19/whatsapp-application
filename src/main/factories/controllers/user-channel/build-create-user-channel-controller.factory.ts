@@ -15,7 +15,7 @@ export class BuildCreateUserChannelControllerFactory {
   public build(): Controller {
     const controller = new CreateUserChannelController(this.createUserChannelUseCDase);
     const jwtAdapter = new JwtAdapter(process.env.SECRET);
-    const authenticationProxy = new AuthenticationProxy(controller, jwtAdapter);
+    const authenticationProxy = new AuthenticationProxy(controller, this.loadUserByEmail, jwtAdapter);
     const adminProxy = new AdminProxy(authenticationProxy, this.loadUserByEmail, jwtAdapter);
 
     return adminProxy;

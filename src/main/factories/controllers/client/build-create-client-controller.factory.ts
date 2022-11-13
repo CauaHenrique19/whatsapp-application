@@ -17,7 +17,7 @@ export class BuildCreateClientControllerFactory {
     const controller = new CreateClientController(this.createClient);
 
     const jwtAdapter = new JwtAdapter(process.env.SECRET);
-    const authenticationProxy = new AuthenticationProxy(controller, jwtAdapter);
+    const authenticationProxy = new AuthenticationProxy(controller, this.loadUserByEmail, jwtAdapter);
     const adminProxy = new AdminProxy(authenticationProxy, this.loadUserByEmail, jwtAdapter);
 
     return adminProxy;

@@ -1,9 +1,14 @@
 import { Decrypter } from 'src/data/protocols/cryptography';
+import { LoadUserByEmailUseCase } from 'src/domain/usecases';
 import { serverError, unauthorized } from 'src/presentation/helpers';
-import { Controller, Gateway, HttpResponse } from 'src/presentation/protocols';
+import { Controller, HttpResponse } from 'src/presentation/protocols';
 
-export class AuthenticationProxy implements Controller, Gateway {
-  constructor(private readonly controller: Controller | Gateway, private readonly decrypter: Decrypter) {}
+export class AuthenticationProxy implements Controller {
+  constructor(
+    private readonly controller: Controller,
+    private readonly loadUserByEmail: LoadUserByEmailUseCase,
+    private readonly decrypter: Decrypter,
+  ) {}
 
   async handle(data: any): Promise<HttpResponse> {
     try {
@@ -12,12 +17,13 @@ export class AuthenticationProxy implements Controller, Gateway {
       }
 
       const value = await this.decrypter.decrypt(data.token);
+      const user = await this.loadUserByEmail.loadByEmail(value.email);
 
       if (!value) {
         return unauthorized();
       }
 
-      return await this.controller.handle(data);
+      return await this.controller.handle({ ...data, user });
     } catch (error) {
       return serverError(error);
     }
