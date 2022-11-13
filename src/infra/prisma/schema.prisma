@@ -37,8 +37,8 @@ model User {
   status    Int
   createdAt DateTime @default(now()) @map("created_at")
 
-  client   Client    @relation(fields: [clientId], references: [id])
-  channels Channel[] @relation("tb_user_in_channel")
+  client   Client        @relation(fields: [clientId], references: [id])
+  channels UserChannel[]
   chats    Chat[]
   ChatLog  ChatLog[]
 
@@ -53,8 +53,8 @@ model Channel {
   description String
   createdAt   DateTime @default(now()) @map("created_at")
 
-  client  Client    @relation(fields: [clientId], references: [id])
-  users   User[]    @relation("tb_user_in_channel")
+  client  Client        @relation(fields: [clientId], references: [id])
+  users   UserChannel[]
   Chat    Chat[]
   ChatLog ChatLog[]
 
@@ -67,6 +67,8 @@ model UserChannel {
   channelId Int      @map("channel_id")
   createdAt DateTime @default(now()) @map("created_at")
   status    Int
+  User      User     @relation(fields: [userId], references: [id])
+  Channel   Channel  @relation(fields: [channelId], references: [id])
 
   @@map("tb_user_in_channel")
 }

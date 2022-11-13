@@ -6,8 +6,8 @@ model Channel {
     description String
     createdAt   DateTime @default(now()) @map("created_at")
 
-    client Client @relation(fields: [clientId], references: [id])
-    users  User[] @relation("tb_user_in_channel")
+    client Client        @relation(fields: [clientId], references: [id])
+    users  UserChannel[]
 
     @@map("tb_channel")
 }
