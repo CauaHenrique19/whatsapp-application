@@ -6,7 +6,7 @@ export interface AttachChatToUserUseCase {
 
 export namespace AttachChatToUserUseCase {
   export type Parameters = {
-    id: number;
+    chatId: number;
     userId: number;
   };
 

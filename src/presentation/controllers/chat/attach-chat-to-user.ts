@@ -8,7 +8,7 @@ export class AttachChatToUserController implements Controller {
 
   async handle(parameters: ControllerData<AttachChatToUserController.Parameters>): Promise<HttpResponse> {
     try {
-      const mandatoryFields: AttachChatToUserController.MandatoryFields[] = ['userId', 'id'];
+      const mandatoryFields: AttachChatToUserController.MandatoryFields[] = ['chatId'];
 
       for (const field of mandatoryFields) {
         if (parameters.data[field] === null || parameters.data[field] === undefined) {
@@ -16,7 +16,7 @@ export class AttachChatToUserController implements Controller {
         }
       }
 
-      const result = await this.attachChatToUser.attachToUser(parameters.data);
+      const result = await this.attachChatToUser.attachToUser({ ...parameters.data, userId: parameters.user.id });
       return ok(result);
     } catch (error) {
       return serverError(error);
@@ -26,8 +26,7 @@ export class AttachChatToUserController implements Controller {
 
 export namespace AttachChatToUserController {
   export type Parameters = {
-    id: number;
-    userId: number;
+    chatId: number;
   };
 
   export type MandatoryFields = keyof Parameters;
