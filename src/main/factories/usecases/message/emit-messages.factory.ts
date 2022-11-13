@@ -4,6 +4,7 @@ import { WhatsappClientInterface } from 'src/data/protocols/whatsapp';
 import { EmitMessages } from 'src/data/usecases/message';
 import { EmitMessagesUseCase } from 'src/domain/usecases';
 import { Multiton } from 'src/infra/multiton';
+import { ChannelPrismaRepository } from 'src/infra/prisma/repositories/channel';
 import { ChatPrismaRepository } from 'src/infra/prisma/repositories/chat';
 import { SocketIoAdapter } from 'src/infra/websocket/socket-io';
 import { EMIT_MESSAGES_FACTORY } from '../../providers';
@@ -14,8 +15,9 @@ export const emitMessagesFactory: Provider = {
     multitonProvider: MultitonInterface<WhatsappClientInterface>,
     socketIoAdapter: SocketIoAdapter,
     chatRepository: ChatPrismaRepository,
+    channelPrismaRepository: ChannelPrismaRepository,
   ): EmitMessagesUseCase => {
-    return new EmitMessages(multitonProvider, socketIoAdapter, chatRepository, chatRepository, chatRepository);
+    return new EmitMessages(multitonProvider, socketIoAdapter, chatRepository, chatRepository, chatRepository, channelPrismaRepository);
   },
-  inject: [Multiton, SocketIoAdapter, ChatPrismaRepository],
+  inject: [Multiton, SocketIoAdapter, ChatPrismaRepository, ChannelPrismaRepository],
 };
