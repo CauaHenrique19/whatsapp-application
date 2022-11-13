@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MultitonProvider } from 'src/infra/multiton';
 import { ChannelPrismaRepository } from 'src/infra/prisma/repositories/channel';
-import { ChatPrismaRepository } from 'src/infra/prisma/repositories/chat';
+import { ChatLogPrismaRepository, ChatPrismaRepository } from 'src/infra/prisma/repositories/chat';
 import { ClientPrismaRepository } from 'src/infra/prisma/repositories/client';
 import { UserPrismaRepository } from 'src/infra/prisma/repositories/user';
 import { UserChannelPrismaRepository } from 'src/infra/prisma/repositories/user-channel';
@@ -27,6 +27,7 @@ import { createUserChannelFactory } from './user-channel';
     ChannelPrismaRepository,
     UserChannelPrismaRepository,
     ChatPrismaRepository,
+    ChatLogPrismaRepository,
 
     //prismaTransactionManager
     PrismaTransactionManager,
