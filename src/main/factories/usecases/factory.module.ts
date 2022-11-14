@@ -3,6 +3,7 @@ import { MultitonProvider } from 'src/infra/multiton';
 import { ChannelPrismaRepository } from 'src/infra/prisma/repositories/channel';
 import { ChatLogPrismaRepository, ChatPrismaRepository } from 'src/infra/prisma/repositories/chat';
 import { ClientPrismaRepository } from 'src/infra/prisma/repositories/client';
+import { MessagePrismaRepository } from 'src/infra/prisma/repositories/message';
 import { UserPrismaRepository } from 'src/infra/prisma/repositories/user';
 import { UserChannelPrismaRepository } from 'src/infra/prisma/repositories/user-channel';
 import { PrismaTransactionManager } from 'src/infra/prisma/transaction-manager';
@@ -11,7 +12,7 @@ import { authenticationFactory, connectToWhatsappFactory } from './authenticatio
 import { createChannelFactory } from './channel';
 import { attachChatToUserFactory, createChatFactory, finishChatFactory } from './chat';
 import { createClientFactory } from './client/create-client.factory';
-import { emitMessagesFactory } from './message';
+import { createMessageFactory, emitMessagesFactory } from './message';
 import { createUserFactory, loadUserByEmailFactory } from './user';
 import { createUserChannelFactory } from './user-channel';
 
@@ -28,6 +29,7 @@ import { createUserChannelFactory } from './user-channel';
     UserChannelPrismaRepository,
     ChatPrismaRepository,
     ChatLogPrismaRepository,
+    MessagePrismaRepository,
 
     //prismaTransactionManager
     PrismaTransactionManager,
@@ -53,6 +55,7 @@ import { createUserChannelFactory } from './user-channel';
 
     //messages
     emitMessagesFactory,
+    createMessageFactory,
 
     //chat
     createChatFactory,
@@ -81,6 +84,7 @@ import { createUserChannelFactory } from './user-channel';
 
     //messages
     emitMessagesFactory,
+    createMessageFactory,
 
     //chat
     createChatFactory,
