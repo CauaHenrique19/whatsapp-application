@@ -7,7 +7,8 @@
       "../web-api/src/infra/prisma/entity/channel/channel.prisma",
       "../web-api/src/infra/prisma/entity/user-channel/user-channel.prisma",
       "../web-api/src/infra/prisma/entity/chat/chat.prisma",
-      "../web-api/src/infra/prisma/entity/chat/chat-log.prisma"
+      "../web-api/src/infra/prisma/entity/chat/chat-log.prisma",
+      "../web-api/src/infra/prisma/entity/message/message.prisma"
     ],
     "fragments": {},
     "output": "../web-api/src/infra/prisma/schema.prisma"

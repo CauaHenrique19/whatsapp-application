@@ -41,6 +41,7 @@ model User {
   channels UserChannel[]
   chats    Chat[]
   ChatLog  ChatLog[]
+  Message  Message[]
 
   @@map("tb_user")
 }
@@ -83,6 +84,7 @@ model Chat {
   user    User?     @relation(fields: [userId], references: [id])
   channel Channel?  @relation(fields: [channelId], references: [id])
   ChatLog ChatLog[]
+  Message Message[]
 
   @@map("tb_chat")
 }
@@ -100,4 +102,18 @@ model ChatLog {
   chat    Chat?    @relation(fields: [chatId], references: [id])
 
   @@map("tb_chat_log")
+}
+
+model Message {
+  id              Int      @id @default(autoincrement())
+  content         String
+  createdAt       DateTime @map("created_at")
+  chatId          Int      @map("chat_id")
+  userId          Int      @map("user_id")
+  fromParticipant Boolean  @map("from_participant")
+
+  chat Chat @relation(fields: [chatId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("tb_message")
 }
