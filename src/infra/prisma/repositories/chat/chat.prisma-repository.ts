@@ -41,11 +41,19 @@ export class ChatPrismaRepository
   }
 
   async getById(parameters: GetChatByIdRepository.Parameters): Promise<GetChatByIdRepository.Result> {
-    return await this.chatRepository.findFirst({
+    const result = await this.chatRepository.findFirst({
       where: {
         id: parameters.id,
       },
+      include: {
+        channel: true,
+      },
     });
+
+    return {
+      ...result,
+      channel: result.channel,
+    };
   }
 
   async update(parameters: UpdateChatRepository.Parameters): Promise<UpdateChatRepository.Result> {
