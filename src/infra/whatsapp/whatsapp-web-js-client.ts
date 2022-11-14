@@ -55,13 +55,15 @@ export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
     return fomattedChats;
   }
 
-  async sendMessage(number: string, content: string | WhatsappList) {
+  async sendMessage(number: string, content: WhatsappList | string) {
     const contactInfo = await this.client.getNumberId(number);
     let finalContent = content;
 
     if (typeof content === 'object') {
-      const listContent = content as WhatsappList;
-      finalContent = new List(listContent.body, listContent.buttonText, listContent.sections, listContent.title, listContent.footer);
+      if ('sections' in (content as any)) {
+        const listContent = content as WhatsappList;
+        finalContent = new List(listContent.body, listContent.buttonText, listContent.sections, listContent.title, listContent.footer);
+      }
     }
 
     await this.client.sendMessage(contactInfo._serialized, finalContent);
