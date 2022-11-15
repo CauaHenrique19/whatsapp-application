@@ -33,7 +33,7 @@ export class EmitMessages implements EmitMessagesUseCase {
 
     client.onMessage(async (message) => {
       const numberParticipant = message.from;
-      const allowedNumbers = ['5521990206939@c.us', '5521988382114@c.us'];
+      const allowedNumbers = ['5521990206939@c.us', '5521988382114@c.us', '5521979392818@c.us'];
       const numberAllowed = allowedNumbers.includes(numberParticipant);
 
       const chat = await this.getChatByNumberParticipantRepository.getByNumberParticipant({ number: numberParticipant });
@@ -41,20 +41,23 @@ export class EmitMessages implements EmitMessagesUseCase {
       let finalChat: ChatModel | GetChatByNumberParticipantRepository.Result = chat;
       let rooms: string[] = [];
 
+      const isResponseOfList = !!message.selectedRowId;
       const idSelectedChannel = parseInt(message.selectedRowId);
-      const chatHasDirectedToChannel = chat.channelId;
+      const selectedNote =
+        message.selectedRowId?.includes('_') && parseInt(message.selectedRowId?.substring(message.selectedRowId?.indexOf('_') + 1));
+      const chatHasDirectedToChannel = chat?.channelId;
 
-      if (chat && numberAllowed) {
+      if (chat && numberAllowed && !isResponseOfList) {
         if (chat.status === ChatStatusEnum.FINISHED) {
           const returnedChat = await this.restartChat(chat, channels, client);
           finalChat = returnedChat;
         }
-      } else if (numberAllowed) {
+      } else if (numberAllowed && !isResponseOfList) {
         const returnedChat = await this.startChat(numberParticipant, channels, client);
         finalChat = returnedChat;
       }
 
-      if (idSelectedChannel && !chatHasDirectedToChannel) {
+      if (!selectedNote && idSelectedChannel && !chatHasDirectedToChannel) {
         const { rooms: returnedRooms, chat: returnedChat } = await this.registerAnswerOfMessageOfSelectChannel(
           idSelectedChannel,
           chat,
@@ -66,6 +69,15 @@ export class EmitMessages implements EmitMessagesUseCase {
         finalChat = returnedChat;
       } else if (idSelectedChannel && chatHasDirectedToChannel) {
         await client.sendMessage(numberParticipant, `❌ Você já foi redirecionado a um canal. Aguarde para ser atendido!`);
+      } else if (selectedNote) {
+        //register avaliation
+        const avaliation = {
+          userId: chat.userId,
+          chatId: chat.id,
+          note: selectedNote,
+          createdAt: new Date(),
+        };
+        await client.sendMessage(numberParticipant, 'Obrigado pela avaliação!');
       }
 
       if (numberAllowed && chatHasDirectedToChannel && chat.user) {
@@ -108,17 +120,17 @@ export class EmitMessages implements EmitMessagesUseCase {
       status: ChatStatusEnum.WAITING_CHANNEL,
     };
 
-    const updatedChat = await this.createChatRepository.create(chat);
+    const createdChat = await this.createChatRepository.create(chat);
     await this.createChatLogRepository.create([
       {
-        chatId: updatedChat.id,
+        chatId: createdChat.id,
         actionType: ChatLogTypeActionEnum.CREATED,
         createdAt: new Date(),
       },
     ]);
 
     await this.sendSelectChannelAutomaticMessage(numberParticipant, channels, client);
-    return updatedChat;
+    return createdChat;
   }
 
   async restartChat(
