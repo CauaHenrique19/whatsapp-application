@@ -1,0 +1,12 @@
+model Avaliation {
+    id        Int      @id @default(autoincrement())
+    userId    Int      @map("user_id")
+    chatId    Int      @map("chat_id")
+    note      Int
+    createdAt DateTime @map("created_at")
+
+    user User @relation(fields: [userId], references: [id])
+    chat Chat @relation(fields: [chatId], references: [id])
+
+    @@map("tb_avaliation")
+}
