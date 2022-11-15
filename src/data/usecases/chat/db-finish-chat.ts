@@ -16,6 +16,10 @@ export class DbFinishChat implements FinishChatUseCase {
   async finish(parameters: FinishChatUseCase.Parameters): Promise<FinishChatUseCase.Result> {
     const loadedChat = await this.getChatByIdRepository.getById({ id: parameters.chatId });
 
+    if (loadedChat.status === ChatStatusEnum.FINISHED) {
+      return;
+    }
+
     if (!loadedChat) {
       //todo
     }
