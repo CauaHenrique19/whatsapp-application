@@ -33,6 +33,9 @@ export class EmitMessages implements EmitMessagesUseCase {
 
     client.onMessage(async (message) => {
       const numberParticipant = message.from;
+      const allowedNumbers = ['5521990206939@c.us', '5521988382114@c.us'];
+      const numberAllowed = allowedNumbers.includes(numberParticipant);
+
       const chat = await this.getChatByNumberParticipantRepository.getByNumberParticipant({ number: numberParticipant });
 
       let finalChat: ChatModel | GetChatByNumberParticipantRepository.Result = chat;
@@ -41,76 +44,33 @@ export class EmitMessages implements EmitMessagesUseCase {
       const idSelectedChannel = parseInt(message.selectedRowId);
       const chatHasDirectedToChannel = chat.channelId;
 
+      if (chat && numberAllowed) {
+        if (chat.status === ChatStatusEnum.FINISHED) {
+          const returnedChat = await this.restartChat(chat, channels, client);
+          finalChat = returnedChat;
+        }
+      } else if (numberAllowed) {
+        const returnedChat = await this.startChat(numberParticipant, channels, client);
+        finalChat = returnedChat;
+      }
+
       if (idSelectedChannel && !chatHasDirectedToChannel) {
-        const channel = channels.find((channel) => channel.id === idSelectedChannel);
-        chat.channelId = idSelectedChannel;
-        chat.status = ChatStatusEnum.WAITING_USER;
-
-        const chatToUpdate = chat;
-        delete chatToUpdate.user;
-
-        finalChat = await this.updateChatRepository.update(chatToUpdate);
-        await this.createChatLogRepository.create([
-          {
-            chatId: finalChat.id,
-            actionType: ChatLogTypeActionEnum.DIRECTED_TO_CHANNEL,
-            channelId: idSelectedChannel,
-            createdAt: new Date(),
-          },
-        ]);
-
-        await client.sendMessage(
-          numberParticipant,
-          `✅ Você será redirecionado para o canal de ${channel.name}, e um dos nossos atendentes irá lhe atender em breve.`,
+        const { rooms: returnedRooms, chat: returnedChat } = await this.registerAnswerOfMessageOfSelectChannel(
+          idSelectedChannel,
+          chat,
+          channels,
+          client,
         );
 
-        const emailsOfUsersToReceiveMessage = channel.users.map((channel) => channel.email);
-        rooms = emailsOfUsersToReceiveMessage;
+        rooms = returnedRooms;
+        finalChat = returnedChat;
       } else if (idSelectedChannel && chatHasDirectedToChannel) {
         await client.sendMessage(numberParticipant, `❌ Você já foi redirecionado a um canal. Aguarde para ser atendido!`);
       }
 
-      const allowedNumbers = ['5521990206939@c.us', '5521988382114@c.us'];
-      const numberAllowed = allowedNumbers.includes(numberParticipant);
-
       if (numberAllowed && chatHasDirectedToChannel && chat.user) {
         const user = chat.user;
         rooms = [user.email];
-      }
-
-      if (chat && numberAllowed) {
-        if (chat.status === ChatStatusEnum.FINISHED) {
-          chat.userId = null;
-          chat.status = ChatStatusEnum.WAITING_CHANNEL;
-
-          const chatToUpdate = chat;
-          delete chatToUpdate.user;
-
-          finalChat = await this.updateChatRepository.update(chat);
-          await this.createChatLogRepository.create([
-            {
-              chatId: finalChat.id,
-              actionType: ChatLogTypeActionEnum.RESTARTED,
-              createdAt: new Date(),
-            },
-          ]);
-          await this.sendSelectChannelAutomaticMessage(numberParticipant, channels, client);
-        }
-      } else if (numberAllowed) {
-        const chat: ChatModel = {
-          numberParticipant: numberParticipant,
-          status: ChatStatusEnum.WAITING_CHANNEL,
-        };
-
-        finalChat = await this.createChatRepository.create(chat);
-        await this.createChatLogRepository.create([
-          {
-            chatId: finalChat.id,
-            actionType: ChatLogTypeActionEnum.CREATED,
-            createdAt: new Date(),
-          },
-        ]);
-        await this.sendSelectChannelAutomaticMessage(numberParticipant, channels, client);
       }
 
       if (finalChat.status === ChatStatusEnum.WAITING_USER) {
@@ -136,6 +96,90 @@ export class EmitMessages implements EmitMessagesUseCase {
     }
 
     return result;
+  }
+
+  async startChat(
+    numberParticipant: string,
+    channels: GetChannelsByClientIdRepository.Result,
+    client: WhatsappClientInterface,
+  ): Promise<ChatModel> {
+    const chat: ChatModel = {
+      numberParticipant: numberParticipant,
+      status: ChatStatusEnum.WAITING_CHANNEL,
+    };
+
+    const updatedChat = await this.createChatRepository.create(chat);
+    await this.createChatLogRepository.create([
+      {
+        chatId: updatedChat.id,
+        actionType: ChatLogTypeActionEnum.CREATED,
+        createdAt: new Date(),
+      },
+    ]);
+
+    await this.sendSelectChannelAutomaticMessage(numberParticipant, channels, client);
+    return updatedChat;
+  }
+
+  async restartChat(
+    chat: GetChatByNumberParticipantRepository.Result,
+    channels: GetChannelsByClientIdRepository.Result,
+    client: WhatsappClientInterface,
+  ): Promise<ChatModel> {
+    chat.userId = null;
+    chat.status = ChatStatusEnum.WAITING_CHANNEL;
+
+    const chatToUpdate = chat;
+    delete chatToUpdate.user;
+
+    const updatedChat = await this.updateChatRepository.update(chat);
+    await this.createChatLogRepository.create([
+      {
+        chatId: updatedChat.id,
+        actionType: ChatLogTypeActionEnum.RESTARTED,
+        createdAt: new Date(),
+      },
+    ]);
+
+    await this.sendSelectChannelAutomaticMessage(updatedChat.numberParticipant, channels, client);
+    return updatedChat;
+  }
+
+  async registerAnswerOfMessageOfSelectChannel(
+    idSelectedChannel: number,
+    chat: GetChatByNumberParticipantRepository.Result,
+    channels: GetChannelsByClientIdRepository.Result,
+    client: WhatsappClientInterface,
+  ): Promise<{ chat: ChatModel; rooms: string[] }> {
+    const channel = channels.find((channel) => channel.id === idSelectedChannel);
+
+    chat.channelId = idSelectedChannel;
+    chat.status = ChatStatusEnum.WAITING_USER;
+
+    const chatToUpdate = chat;
+    delete chatToUpdate.user;
+
+    const updatedChat = await this.updateChatRepository.update(chatToUpdate);
+    await this.createChatLogRepository.create([
+      {
+        chatId: updatedChat.id,
+        actionType: ChatLogTypeActionEnum.DIRECTED_TO_CHANNEL,
+        channelId: idSelectedChannel,
+        createdAt: new Date(),
+      },
+    ]);
+
+    await client.sendMessage(
+      updatedChat.numberParticipant,
+      `✅ Você será redirecionado para o canal de ${channel.name}, e um dos nossos atendentes irá lhe atender em breve.`,
+    );
+
+    const emailsOfUsersToReceiveMessage = channel.users.map((channel) => channel.email);
+
+    return {
+      rooms: emailsOfUsersToReceiveMessage,
+      chat: updatedChat,
+    };
   }
 
   async sendSelectChannelAutomaticMessage(
