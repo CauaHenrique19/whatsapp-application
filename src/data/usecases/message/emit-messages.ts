@@ -2,6 +2,7 @@ import { ChatLogTypeActionEnum, ChatStatusEnum, WebsocketEventsEnum } from 'src/
 import {
   CreateChatLogRepository,
   CreateChatRepository,
+  CreateMessageRepository,
   GetChannelsByClientIdRepository,
   GetChatByNumberParticipantRepository,
   UpdateChatRepository,
@@ -21,6 +22,7 @@ export class EmitMessages implements EmitMessagesUseCase {
     private readonly updateChatRepository: UpdateChatRepository,
     private readonly getChannelsByClientIdRepository: GetChannelsByClientIdRepository,
     private readonly createChatLogRepository: CreateChatLogRepository,
+    private readonly createMessageRepository: CreateMessageRepository,
   ) {}
 
   async emit(parameters: EmitMessagesUseCase.Parameters): Promise<EmitMessagesUseCase.Result> {
@@ -68,12 +70,15 @@ export class EmitMessages implements EmitMessagesUseCase {
         await client.sendMessage(numberParticipant, `❌ Você já foi redirecionado a um canal. Aguarde para ser atendido!`);
       }
 
-      if (numberParticipant === '5521990206939@c.us' && chatHasDirectedToChannel && chat.user) {
+      const allowedNumbers = ['5521990206939@c.us', '5521988382114@c.us'];
+      const numberAllowed = allowedNumbers.includes(numberParticipant);
+
+      if (numberAllowed && chatHasDirectedToChannel && chat.user) {
         const user = chat.user;
         rooms = [user.email];
       }
 
-      if (chat && numberParticipant === '5521990206939@c.us') {
+      if (chat && numberAllowed) {
         if (chat.status === ChatStatusEnum.FINISHED) {
           chat.userId = null;
           chat.status = ChatStatusEnum.WAITING_CHANNEL;
@@ -91,7 +96,7 @@ export class EmitMessages implements EmitMessagesUseCase {
           ]);
           await this.sendSelectChannelAutomaticMessage(numberParticipant, channels, client);
         }
-      } else if (numberParticipant === '5521990206939@c.us') {
+      } else if (numberAllowed) {
         const chat: ChatModel = {
           numberParticipant: numberParticipant,
           status: ChatStatusEnum.WAITING_CHANNEL,
@@ -114,7 +119,13 @@ export class EmitMessages implements EmitMessagesUseCase {
         rooms = emailsOfUsersToReceiveMessage;
       }
 
-      //SAVE RECEIVED MESSAGE
+      await this.createMessageRepository.create({
+        chatId: finalChat.id,
+        content: message.content,
+        createdAt: message.time,
+        fromParticipant: true,
+        userId: finalChat.userId,
+      });
       this.websocketAdapter.emitEventToRooms<WhatsappMessageModel>(rooms, WebsocketEventsEnum.NEW_MESSAGE, message);
     });
 

@@ -6,6 +6,7 @@ import { EmitMessagesUseCase } from 'src/domain/usecases';
 import { Multiton } from 'src/infra/multiton';
 import { ChannelPrismaRepository } from 'src/infra/prisma/repositories/channel';
 import { ChatLogPrismaRepository, ChatPrismaRepository } from 'src/infra/prisma/repositories/chat';
+import { MessagePrismaRepository } from 'src/infra/prisma/repositories/message';
 import { SocketIoAdapter } from 'src/infra/websocket/socket-io';
 import { EMIT_MESSAGES_FACTORY } from '../../providers';
 
@@ -17,6 +18,7 @@ export const emitMessagesFactory: Provider = {
     chatRepository: ChatPrismaRepository,
     channelPrismaRepository: ChannelPrismaRepository,
     chatLogRepository: ChatLogPrismaRepository,
+    messageRepository: MessagePrismaRepository,
   ): EmitMessagesUseCase => {
     return new EmitMessages(
       multitonProvider,
@@ -26,7 +28,8 @@ export const emitMessagesFactory: Provider = {
       chatRepository,
       channelPrismaRepository,
       chatLogRepository,
+      messageRepository,
     );
   },
-  inject: [Multiton, SocketIoAdapter, ChatPrismaRepository, ChannelPrismaRepository, ChatLogPrismaRepository],
+  inject: [Multiton, SocketIoAdapter, ChatPrismaRepository, ChannelPrismaRepository, ChatLogPrismaRepository, MessagePrismaRepository],
 };
