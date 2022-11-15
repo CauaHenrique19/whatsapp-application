@@ -3,11 +3,11 @@ model Message {
     content         String
     createdAt       DateTime @map("created_at")
     chatId          Int      @map("chat_id")
-    userId          Int      @map("user_id")
+    userId          Int?     @map("user_id")
     fromParticipant Boolean  @map("from_participant")
 
-    chat Chat @relation(fields: [chatId], references: [id])
-    user User @relation(fields: [userId], references: [id])
+    chat Chat  @relation(fields: [chatId], references: [id])
+    user User? @relation(fields: [userId], references: [id])
 
     @@map("tb_message")
 }
