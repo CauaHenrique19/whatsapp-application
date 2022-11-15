@@ -1,5 +1,6 @@
 import { ChatLogTypeActionEnum, ChatStatusEnum, WebsocketEventsEnum } from 'src/data/enums';
 import {
+  CreateAvaliationRepository,
   CreateChatLogRepository,
   CreateChatRepository,
   CreateMessageRepository,
@@ -23,6 +24,7 @@ export class EmitMessages implements EmitMessagesUseCase {
     private readonly getChannelsByClientIdRepository: GetChannelsByClientIdRepository,
     private readonly createChatLogRepository: CreateChatLogRepository,
     private readonly createMessageRepository: CreateMessageRepository,
+    private readonly createAvaliationRepository: CreateAvaliationRepository,
   ) {}
 
   async emit(parameters: EmitMessagesUseCase.Parameters): Promise<EmitMessagesUseCase.Result> {
@@ -77,6 +79,8 @@ export class EmitMessages implements EmitMessagesUseCase {
           note: selectedNote,
           createdAt: new Date(),
         };
+
+        await this.createAvaliationRepository.create(avaliation);
         await client.sendMessage(numberParticipant, 'Obrigado pela avaliação!');
       }
 

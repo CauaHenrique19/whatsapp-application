@@ -4,6 +4,7 @@ import { WhatsappClientInterface } from 'src/data/protocols/whatsapp';
 import { EmitMessages } from 'src/data/usecases/message';
 import { EmitMessagesUseCase } from 'src/domain/usecases';
 import { Multiton } from 'src/infra/multiton';
+import { AvaliationPrismaRepository } from 'src/infra/prisma/repositories/avaliation';
 import { ChannelPrismaRepository } from 'src/infra/prisma/repositories/channel';
 import { ChatLogPrismaRepository, ChatPrismaRepository } from 'src/infra/prisma/repositories/chat';
 import { MessagePrismaRepository } from 'src/infra/prisma/repositories/message';
@@ -19,6 +20,7 @@ export const emitMessagesFactory: Provider = {
     channelPrismaRepository: ChannelPrismaRepository,
     chatLogRepository: ChatLogPrismaRepository,
     messageRepository: MessagePrismaRepository,
+    avaliationRepository: AvaliationPrismaRepository,
   ): EmitMessagesUseCase => {
     return new EmitMessages(
       multitonProvider,
@@ -29,7 +31,16 @@ export const emitMessagesFactory: Provider = {
       channelPrismaRepository,
       chatLogRepository,
       messageRepository,
+      avaliationRepository,
     );
   },
-  inject: [Multiton, SocketIoAdapter, ChatPrismaRepository, ChannelPrismaRepository, ChatLogPrismaRepository, MessagePrismaRepository],
+  inject: [
+    Multiton,
+    SocketIoAdapter,
+    ChatPrismaRepository,
+    ChannelPrismaRepository,
+    ChatLogPrismaRepository,
+    MessagePrismaRepository,
+    AvaliationPrismaRepository,
+  ],
 };
