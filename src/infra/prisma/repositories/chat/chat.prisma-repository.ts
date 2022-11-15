@@ -34,10 +34,7 @@ export class ChatPrismaRepository
       },
     });
 
-    return {
-      ...result,
-      user: result.user,
-    };
+    return result;
   }
 
   async getById(parameters: GetChatByIdRepository.Parameters): Promise<GetChatByIdRepository.Result> {
