@@ -15,7 +15,7 @@ export class DbCreateMessage implements CreateMessageUseCase {
       chatId: parameters.chatId,
       content: parameters.content,
       userId: parameters.user.id,
-      fromParticipant: true,
+      fromParticipant: false,
       createdAt: new Date(),
     };
 
