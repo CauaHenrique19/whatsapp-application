@@ -17,7 +17,7 @@ export class CreateMessageController implements Controller {
         }
       }
 
-      const result = await this.createMessageUseCase.create({ ...parameters.data, userId: parameters.user.id });
+      const result = await this.createMessageUseCase.create({ ...parameters.data, user: parameters.user });
       return ok(result);
     } catch (error) {
       return serverError(error);
