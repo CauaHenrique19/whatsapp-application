@@ -5,9 +5,9 @@ export interface MessageModel {
   id: number;
   content: string;
   createdAt: Date;
-  userId: number;
+  userId?: number;
   chatId: number;
   fromParticipant: boolean;
-  user: UserModel;
+  user?: UserModel;
   chat: ChatModel;
 }
