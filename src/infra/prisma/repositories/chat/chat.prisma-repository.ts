@@ -1,4 +1,5 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient, ChatLog } from '@prisma/client';
+import { ChatLogTypeActionEnum } from 'src/data/enums';
 import { CreateChatRepository, GetChatByNumberParticipantRepository, UpdateChatRepository } from 'src/data/protocols/db';
 import { GetChatByIdRepository } from 'src/data/protocols/db/chat/get-chat-by-id.repository';
 
@@ -39,18 +40,44 @@ export class ChatPrismaRepository
 
   async getById(parameters: GetChatByIdRepository.Parameters): Promise<GetChatByIdRepository.Result> {
     const result = await this.chatRepository.findFirst({
+      select: {
+        id: true,
+        numberParticipant: true,
+        userId: true,
+        channelId: true,
+        status: true,
+        channel: true,
+        chatLog: {
+          select: {
+            id: true,
+            chatId: true,
+            userId: true,
+            actionType: true,
+            createdAt: true,
+            channel: {
+              select: {
+                id: true,
+                name: true,
+                description: true,
+              },
+            },
+            user: {
+              select: {
+                id: true,
+                email: true,
+                name: true,
+                lastName: true,
+              },
+            },
+          },
+        },
+      },
       where: {
         id: parameters.id,
       },
-      include: {
-        channel: true,
-      },
     });
 
-    return {
-      ...result,
-      channel: result.channel,
-    };
+    return result;
   }
 
   async update(parameters: UpdateChatRepository.Parameters): Promise<UpdateChatRepository.Result> {
