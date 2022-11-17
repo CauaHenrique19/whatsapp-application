@@ -70,6 +70,9 @@ export class ChatPrismaRepository
               },
             },
           },
+          orderBy: {
+            createdAt: 'desc',
+          },
         },
       },
       where: {
