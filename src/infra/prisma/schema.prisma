@@ -84,7 +84,7 @@ model Chat {
 
   user       User?        @relation(fields: [userId], references: [id])
   channel    Channel?     @relation(fields: [channelId], references: [id])
-  ChatLog    ChatLog[]
+  chatLog    ChatLog[]
   Message    Message[]
   Avaliation Avaliation[]
 
