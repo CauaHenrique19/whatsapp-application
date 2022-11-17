@@ -12,7 +12,7 @@ import { SocketIoAdapter } from 'src/infra/websocket/socket-io';
 import { authenticationFactory, connectToWhatsappFactory } from './authentication';
 import { createAvaliationFactory } from './avaliation';
 import { createChannelFactory } from './channel';
-import { attachChatToUserFactory, createChatFactory, finishChatFactory } from './chat';
+import { attachChatToUserFactory, createChatFactory, finishChatFactory, getChatByIdFactory } from './chat';
 import { createClientFactory } from './client/create-client.factory';
 import { createMessageFactory, emitMessagesFactory } from './message';
 import { createUserFactory, loadUserByEmailFactory } from './user';
@@ -64,6 +64,7 @@ import { createUserChannelFactory } from './user-channel';
     createChatFactory,
     attachChatToUserFactory,
     finishChatFactory,
+    getChatByIdFactory,
 
     //avaliations
     createAvaliationFactory,
@@ -96,6 +97,7 @@ import { createUserChannelFactory } from './user-channel';
     createChatFactory,
     attachChatToUserFactory,
     finishChatFactory,
+    getChatByIdFactory,
 
     //avaliations
     createAvaliationFactory,
