@@ -4,3 +4,4 @@ export * from './update-chat';
 export * from './attach-chat-to-user';
 export * from './finish-chat';
 export * from './create-chat-log';
+export * from './get-chat-by-id';
