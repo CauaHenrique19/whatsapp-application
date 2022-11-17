@@ -4,3 +4,10 @@ export enum ChatStatusEnum {
   IN_PROGRESS = 3,
   FINISHED = 4,
 }
+
+export enum ChatStatusLabelEnum {
+  WAITING_CHANNEL = 'Aguardado Canal',
+  WAITING_USER = 'Aguardando Usuário',
+  IN_PROGRESS = 'Em Progresso',
+  FINISHED = 'Finalizado',
+}
