@@ -35,7 +35,7 @@ export class EmitMessages implements EmitMessagesUseCase {
 
     client.onMessage(async (message) => {
       const numberParticipant = message.from;
-      const allowedNumbers = ['5521990206939@c.us', '5521988382114@c.us', '5521979392818@c.us'];
+      const allowedNumbers = ['5521990206939@c.us', '5521988382114@c.us', '5521979392818@c.us', '5521980284254@c.us'];
       const numberAllowed = allowedNumbers.includes(numberParticipant);
 
       const chat = await this.getChatByNumberParticipantRepository.getByNumberParticipant({ number: numberParticipant });
@@ -80,7 +80,15 @@ export class EmitMessages implements EmitMessagesUseCase {
           createdAt: new Date(),
         };
 
-        await this.createAvaliationRepository.create(avaliation);
+        const createdAvaliation = await this.createAvaliationRepository.create(avaliation);
+        await this.createChatLogRepository.create([
+          {
+            chatId: finalChat.id,
+            avaliationId: createdAvaliation.id,
+            actionType: ChatLogTypeActionEnum.AVALIATED,
+            createdAt: new Date(),
+          },
+        ]);
         await client.sendMessage(numberParticipant, 'Obrigado pela avaliação!');
       }
 
