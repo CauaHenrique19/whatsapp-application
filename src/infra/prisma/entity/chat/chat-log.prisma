@@ -1,14 +1,16 @@
 model ChatLog {
-    id         Int      @id @default(autoincrement())
-    chatId     Int?     @map("chat_id")
-    userId     Int?     @map("user_id")
-    channelId  Int?     @map("channel_id")
-    actionType Int      @map("action_type")
-    createdAt  DateTime @map("created_at")
+    id           Int      @id @default(autoincrement())
+    chatId       Int?     @map("chat_id")
+    userId       Int?     @map("user_id")
+    channelId    Int?     @map("channel_id")
+    avaliationId Int?     @map("avaliation_id")
+    actionType   Int      @map("action_type")
+    createdAt    DateTime @map("created_at")
 
-    user    User?    @relation(fields: [userId], references: [id])
-    channel Channel? @relation(fields: [channelId], references: [id])
-    chat    Chat?    @relation(fields: [chatId], references: [id])
+    user       User?       @relation(fields: [userId], references: [id])
+    channel    Channel?    @relation(fields: [channelId], references: [id])
+    chat       Chat?       @relation(fields: [chatId], references: [id])
+    avaliation Avaliation? @relation(fields: [avaliationId], references: [id])
 
     @@map("tb_chat_log")
 }
