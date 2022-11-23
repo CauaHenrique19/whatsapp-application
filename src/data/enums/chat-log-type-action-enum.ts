@@ -4,4 +4,5 @@ export enum ChatLogTypeActionEnum {
   SELECTED_BY_USER = 3,
   FINISHED = 4,
   RESTARTED = 5,
+  AVALIATED = 6,
 }
