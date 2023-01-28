@@ -37,12 +37,13 @@ model User {
   status    Int
   createdAt DateTime @default(now()) @map("created_at")
 
-  client     Client        @relation(fields: [clientId], references: [id])
-  channels   UserChannel[]
-  chats      Chat[]
-  ChatLog    ChatLog[]
-  Message    Message[]
-  Avaliation Avaliation[]
+  client            Client              @relation(fields: [clientId], references: [id])
+  channels          UserChannel[]
+  chats             Chat[]
+  ChatLog           ChatLog[]
+  Message           Message[]
+  Avaliation        Avaliation[]
+  PreDefinedMessage PreDefinedMessage[]
 
   @@map("tb_user")
 }
@@ -134,4 +135,16 @@ model Avaliation {
   ChatLog ChatLog[]
 
   @@map("tb_avaliation")
+}
+
+model PreDefinedMessage {
+  id        Int      @id @default(autoincrement())
+  content   String
+  userId    Int      @map("user_id")
+  createdAt DateTime @map("created_at")
+  status    Int
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("tb_pre_defined_message")
 }

@@ -9,7 +9,8 @@
       "../web-api/src/infra/prisma/entity/chat/chat.prisma",
       "../web-api/src/infra/prisma/entity/chat/chat-log.prisma",
       "../web-api/src/infra/prisma/entity/message/message.prisma",
-      "../web-api/src/infra/prisma/entity/avaliation/avaliation.prisma"
+      "../web-api/src/infra/prisma/entity/avaliation/avaliation.prisma",
+      "../web-api/src/infra/prisma/entity/pre-defined-message/pre-defined-message.prisma"
     ],
     "fragments": {},
     "output": "../web-api/src/infra/prisma/schema.prisma"
