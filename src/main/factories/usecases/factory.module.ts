@@ -5,6 +5,7 @@ import { ChannelPrismaRepository } from 'src/infra/prisma/repositories/channel';
 import { ChatLogPrismaRepository, ChatPrismaRepository } from 'src/infra/prisma/repositories/chat';
 import { ClientPrismaRepository } from 'src/infra/prisma/repositories/client';
 import { MessagePrismaRepository } from 'src/infra/prisma/repositories/message';
+import { PreDefinedMessagePrismaRepository } from 'src/infra/prisma/repositories/pre-defined-message';
 import { UserPrismaRepository } from 'src/infra/prisma/repositories/user';
 import { UserChannelPrismaRepository } from 'src/infra/prisma/repositories/user-channel';
 import { PrismaTransactionManager } from 'src/infra/prisma/transaction-manager';
@@ -15,6 +16,7 @@ import { createChannelFactory } from './channel';
 import { attachChatToUserFactory, createChatFactory, finishChatFactory, getChatByIdFactory } from './chat';
 import { createClientFactory } from './client/create-client.factory';
 import { createMessageFactory, emitMessagesFactory } from './message';
+import { createPreDefinedMessageFactory } from './pre-defined-message';
 import { createUserFactory, loadUserByEmailFactory } from './user';
 import { createUserChannelFactory } from './user-channel';
 
@@ -33,6 +35,7 @@ import { createUserChannelFactory } from './user-channel';
     ChatLogPrismaRepository,
     MessagePrismaRepository,
     AvaliationPrismaRepository,
+    PreDefinedMessagePrismaRepository,
 
     //prismaTransactionManager
     PrismaTransactionManager,
@@ -68,6 +71,9 @@ import { createUserChannelFactory } from './user-channel';
 
     //avaliations
     createAvaliationFactory,
+
+    //pre defined message
+    createPreDefinedMessageFactory,
   ],
   exports: [
     //whatsapp
@@ -101,6 +107,9 @@ import { createUserChannelFactory } from './user-channel';
 
     //avaliations
     createAvaliationFactory,
+
+    //pre defined message
+    createPreDefinedMessageFactory,
   ],
 })
 export class FactoryModule {}

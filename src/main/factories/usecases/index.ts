@@ -5,3 +5,4 @@ export * from './user-channel';
 export * from './message';
 export * from './chat';
 export * from './avaliation';
+export * from './pre-defined-message';
