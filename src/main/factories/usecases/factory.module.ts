@@ -16,7 +16,7 @@ import { createChannelFactory } from './channel';
 import { attachChatToUserFactory, createChatFactory, finishChatFactory, getChatByIdFactory } from './chat';
 import { createClientFactory } from './client/create-client.factory';
 import { createMessageFactory, emitMessagesFactory } from './message';
-import { createPreDefinedMessageFactory } from './pre-defined-message';
+import { createPreDefinedMessageFactory, getPreDefinedMessageByUserIdFactory } from './pre-defined-message';
 import { createUserFactory, loadUserByEmailFactory } from './user';
 import { createUserChannelFactory } from './user-channel';
 
@@ -74,6 +74,7 @@ import { createUserChannelFactory } from './user-channel';
 
     //pre defined message
     createPreDefinedMessageFactory,
+    getPreDefinedMessageByUserIdFactory,
   ],
   exports: [
     //whatsapp
@@ -110,6 +111,7 @@ import { createUserChannelFactory } from './user-channel';
 
     //pre defined message
     createPreDefinedMessageFactory,
+    getPreDefinedMessageByUserIdFactory,
   ],
 })
 export class FactoryModule {}
