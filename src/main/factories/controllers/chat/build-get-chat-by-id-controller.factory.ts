@@ -1,21 +1,19 @@
 import { Inject } from '@nestjs/common';
-import { GetChatByIdUseCase, LoadUserByEmailUseCase } from 'src/domain/usecases';
-import { JwtAdapter } from 'src/infra/cryptography/jwt-adapter';
-import { AuthenticationProxy } from 'src/main/proxies';
+import { GetChatByIdUseCase } from 'src/domain/usecases';
 import { GetChatByIdController } from 'src/presentation/controllers/chat';
 import { Controller } from 'src/presentation/protocols';
-import { GET_CHAT_BY_ID_FACTORY, LOAD_USER_BY_EMAIL_FACTORY } from '../../providers';
+import { AUTHENTICATION_PROXY_FACTORY, GET_CHAT_BY_ID_FACTORY } from 'src/main/factories/providers';
+import { AuthenticationProxyFactory } from 'src/main/factories/proxies';
 
 export class BuildGetChatByIdControllerFactory {
   constructor(
     @Inject(GET_CHAT_BY_ID_FACTORY) private readonly getChatByIdUseCase: GetChatByIdUseCase,
-    @Inject(LOAD_USER_BY_EMAIL_FACTORY) private readonly loadUserByEmail: LoadUserByEmailUseCase,
+    @Inject(AUTHENTICATION_PROXY_FACTORY) private readonly authenticationProxyFactory: AuthenticationProxyFactory,
   ) {}
 
   public build(): Controller {
     const controller = new GetChatByIdController(this.getChatByIdUseCase);
-    const jwtAdapter = new JwtAdapter(process.env.SECRET);
-    const authenticationProxy = new AuthenticationProxy(controller, this.loadUserByEmail, jwtAdapter);
+    const authenticationProxy = this.authenticationProxyFactory(controller);
 
     return authenticationProxy;
   }

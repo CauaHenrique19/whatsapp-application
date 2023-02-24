@@ -1,21 +1,19 @@
 import { Inject } from '@nestjs/common';
-import { EmitMessagesUseCase, LoadUserByEmailUseCase } from 'src/domain/usecases';
-import { JwtAdapter } from 'src/infra/cryptography/jwt-adapter';
-import { AuthenticationProxy } from 'src/main/proxies';
+import { EmitMessagesUseCase } from 'src/domain/usecases';
 import { EmitMessagesController } from 'src/presentation/controllers/message';
 import { Controller } from 'src/presentation/protocols';
-import { EMIT_MESSAGES_FACTORY, LOAD_USER_BY_EMAIL_FACTORY } from '../../providers';
+import { EMIT_MESSAGES_FACTORY, AUTHENTICATION_PROXY_FACTORY } from 'src/main/factories/providers';
+import { AuthenticationProxyFactory } from 'src/main/factories/proxies';
 
 export class BuildEmitMessageControllerFactory {
   constructor(
     @Inject(EMIT_MESSAGES_FACTORY) private readonly emitMessages: EmitMessagesUseCase,
-    @Inject(LOAD_USER_BY_EMAIL_FACTORY) private readonly loadUserByEmail: LoadUserByEmailUseCase,
+    @Inject(AUTHENTICATION_PROXY_FACTORY) private readonly authenticationProxyFactory: AuthenticationProxyFactory,
   ) {}
 
   public build(): Controller {
     const controller = new EmitMessagesController(this.emitMessages);
-    const jwtAdapter = new JwtAdapter(process.env.SECRET);
-    const authenticationProxy = new AuthenticationProxy(controller, this.loadUserByEmail, jwtAdapter);
+    const authenticationProxy = this.authenticationProxyFactory(controller);
 
     return authenticationProxy;
   }
