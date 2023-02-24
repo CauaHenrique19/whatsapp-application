@@ -10,6 +10,7 @@ import { UserPrismaRepository } from 'src/infra/prisma/repositories/user';
 import { UserChannelPrismaRepository } from 'src/infra/prisma/repositories/user-channel';
 import { PrismaTransactionManager } from 'src/infra/prisma/transaction-manager';
 import { SocketIoAdapter } from 'src/infra/websocket/socket-io';
+import { adminProxyFactory, authenticationProxyFactory } from '../proxies';
 import { authenticationFactory, connectToWhatsappFactory } from './authentication';
 import { createAvaliationFactory } from './avaliation';
 import { createChannelFactory } from './channel';
@@ -36,6 +37,10 @@ import { createUserChannelFactory } from './user-channel';
     MessagePrismaRepository,
     AvaliationPrismaRepository,
     PreDefinedMessagePrismaRepository,
+
+    //proxies
+    adminProxyFactory,
+    authenticationProxyFactory,
 
     //prismaTransactionManager
     PrismaTransactionManager,
@@ -77,6 +82,10 @@ import { createUserChannelFactory } from './user-channel';
     getPreDefinedMessageByUserIdFactory,
   ],
   exports: [
+    //proxies
+    adminProxyFactory,
+    authenticationProxyFactory,
+
     //whatsapp
     connectToWhatsappFactory,
 
