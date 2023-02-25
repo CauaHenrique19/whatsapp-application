@@ -97,7 +97,7 @@ export class EmitMessages implements EmitMessagesUseCase {
         rooms = [user.email];
       }
 
-      if (finalChat.status === ChatStatusEnum.WAITING_USER) {
+      if (finalChat?.status === ChatStatusEnum.WAITING_USER) {
         const channel = channels.find((channel) => channel.id === finalChat.channelId);
         const emailsOfUsersToReceiveMessage = channel.users.map((channel) => channel.email);
         rooms = emailsOfUsersToReceiveMessage;
@@ -109,6 +109,7 @@ export class EmitMessages implements EmitMessagesUseCase {
         createdAt: message.time,
         fromParticipant: true,
         userId: finalChat.userId,
+        whatsappMessageId: message.id,
       });
       this.websocketAdapter.emitEventToRooms<WhatsappMessageModel>(rooms, WebsocketEventsEnum.NEW_MESSAGE, message);
     });
