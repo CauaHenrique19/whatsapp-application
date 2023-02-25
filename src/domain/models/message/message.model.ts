@@ -8,6 +8,7 @@ export interface MessageModel {
   userId?: number;
   chatId: number;
   fromParticipant: boolean;
+  whatsappMessageId: string;
   user?: UserModel;
   chat: ChatModel;
 }
