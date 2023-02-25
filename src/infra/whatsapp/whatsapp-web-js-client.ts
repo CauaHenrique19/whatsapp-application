@@ -1,5 +1,5 @@
 import { WhatsappClientInterface } from 'src/data/protocols/whatsapp';
-import { WhatsappChatModel, WhatsappList, WhatsappMessageModel } from 'src/domain/models';
+import { WhatsappChatModel, WhatsappList, WhatsappMessageModel, WhatsappSendedMessageModel } from 'src/domain/models';
 import { Client, Chat as WhatsappWebChat, List } from 'whatsapp-web.js';
 
 export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
@@ -55,7 +55,7 @@ export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
     return fomattedChats;
   }
 
-  async sendMessage(number: string, content: WhatsappList | string) {
+  async sendMessage(number: string, content: WhatsappList | string): Promise<WhatsappSendedMessageModel> {
     const contactInfo = await this.client.getNumberId(number);
     let finalContent = content;
 
@@ -66,6 +66,12 @@ export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
       }
     }
 
-    await this.client.sendMessage(contactInfo._serialized, finalContent);
+    const message = await this.client.sendMessage(contactInfo._serialized, finalContent);
+
+    return {
+      id: message.id.id,
+      content: message.body,
+      time: new Date(),
+    };
   }
 }
