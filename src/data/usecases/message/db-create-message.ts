@@ -11,22 +11,25 @@ export class DbCreateMessage implements CreateMessageUseCase {
   ) {}
 
   async create(parameters: CreateMessageUseCase.Parameters): Promise<CreateMessageUseCase.Result> {
+    const chat = await this.getChatByIdRepository.getById({ id: parameters.chatId });
+
+    const { instance: client } = await this.multiton.getInstance(parameters.user.clientId);
+
+    const templateMessage = `*${chat.channel.name} - ${parameters.user.name} ${parameters.user.lastName}*
+    \n${parameters.content}`;
+
+    const sendedMessage = await client.sendMessage(chat.numberParticipant, templateMessage);
+
     const messageToCreate: CreateMessageRepository.Parameters = {
       chatId: parameters.chatId,
       content: parameters.content,
       userId: parameters.user.id,
       fromParticipant: false,
       createdAt: new Date(),
+      whatsappMessageId: sendedMessage.id,
     };
 
     const message = await this.createMessageRepository.create(messageToCreate);
-    const chat = await this.getChatByIdRepository.getById({ id: parameters.chatId });
-
-    const { instance: client } = await this.multiton.getInstance(parameters.user.clientId);
-
-    const templateMessage = `*${chat.channel.name} - ${parameters.user.name} ${parameters.user.lastName}*
-      \n${parameters.content}`;
-    await client.sendMessage(chat.numberParticipant, templateMessage);
 
     return message;
   }
