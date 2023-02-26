@@ -31,6 +31,8 @@ export const emitMessagesFactory: Provider = {
       channelPrismaRepository,
       chatLogRepository,
       messageRepository,
+      messageRepository,
+      messageRepository,
       avaliationRepository,
     );
   },

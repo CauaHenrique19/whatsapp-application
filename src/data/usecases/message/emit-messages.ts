@@ -1,12 +1,14 @@
-import { ChatLogTypeActionEnum, ChatStatusEnum, WebsocketEventsEnum } from 'src/data/enums';
+import { ChatLogTypeActionEnum, ChatStatusEnum, MessageAckEnum, WebsocketEventsEnum } from 'src/data/enums';
 import {
   CreateAvaliationRepository,
   CreateChatLogRepository,
   CreateChatRepository,
   CreateMessageRepository,
+  FindMessageRepository,
   GetChannelsByClientIdRepository,
   GetChatByNumberParticipantRepository,
   UpdateChatRepository,
+  UpdateMessageRepository,
 } from 'src/data/protocols/db';
 import { MultitonInterface } from 'src/data/protocols/multiton';
 import { WebsocketInterface } from 'src/data/protocols/websocket';
@@ -24,6 +26,8 @@ export class EmitMessages implements EmitMessagesUseCase {
     private readonly getChannelsByClientIdRepository: GetChannelsByClientIdRepository,
     private readonly createChatLogRepository: CreateChatLogRepository,
     private readonly createMessageRepository: CreateMessageRepository,
+    private readonly updateMessageRepository: UpdateMessageRepository,
+    private readonly findMessageRepository: FindMessageRepository,
     private readonly createAvaliationRepository: CreateAvaliationRepository,
   ) {}
 
@@ -110,8 +114,30 @@ export class EmitMessages implements EmitMessagesUseCase {
         fromParticipant: true,
         userId: finalChat.userId,
         whatsappMessageId: message.id,
+        ack: MessageAckEnum.SENDED,
       });
+
       this.websocketAdapter.emitEventToRooms<WhatsappMessageModel>(rooms, WebsocketEventsEnum.NEW_MESSAGE, message);
+    });
+
+    client.onAckUpdated(async (ack) => {
+      const message = await this.findMessageRepository.findMessage({ whatsappMessageId: ack.messageId });
+
+      if (message) {
+        await this.updateMessageRepository.update({
+          id: message.id,
+          whatsappMessageId: ack.messageId,
+          ack: ack.ack,
+        });
+
+        const responsibleUserEmail = message.chat.user.email;
+
+        this.websocketAdapter.emitEventToRooms([responsibleUserEmail], WebsocketEventsEnum.ACK_UPDATED, {
+          id: message.id,
+          whatsappMessageId: message.whatsappMessageId,
+          ack: ack.ack,
+        });
+      }
     });
 
     let result = true;
