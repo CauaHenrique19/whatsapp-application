@@ -1,5 +1,11 @@
 import { WhatsappClientInterface } from 'src/data/protocols/whatsapp';
-import { WhatsappChatModel, WhatsappList, WhatsappMessageModel, WhatsappSendedMessageModel } from 'src/domain/models';
+import {
+  WhatsappChatModel,
+  WhatsappList,
+  WhatsappMessageAckUpdated,
+  WhatsappMessageModel,
+  WhatsappSendedMessageModel,
+} from 'src/domain/models';
 import { Client, Chat as WhatsappWebChat, List } from 'whatsapp-web.js';
 
 export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
@@ -36,6 +42,12 @@ export class WhatsappWebJsWhatsappClient implements WhatsappClientInterface {
       };
 
       cb(formattedMessage);
+    });
+  }
+
+  onAckUpdated(cb: (ackUpdated: WhatsappMessageAckUpdated) => void) {
+    this.client.on('message_ack', (message) => {
+      cb({ messageId: message.id.id, ack: message.ack });
     });
   }
 
