@@ -5,6 +5,6 @@ export interface CreateMessageUseCase {
 }
 
 export namespace CreateMessageUseCase {
-  export type Parameters = Omit<MessageModel, 'id' | 'userId' | 'chat' | 'createdAt' | 'fromParticipant' | 'whatsappMessageId'>;
+  export type Parameters = Omit<MessageModel, 'id' | 'userId' | 'chat' | 'createdAt' | 'fromParticipant' | 'whatsappMessageId' | 'ack'>;
   export type Result = Omit<MessageModel, 'user' | 'chat'>;
 }
