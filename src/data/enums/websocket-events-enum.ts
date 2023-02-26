@@ -5,4 +5,5 @@ export enum WebsocketEventsEnum {
   ALLOW_RECEIVE_MESSAGES = 'allow_receive_messages',
   RESULT_ALLOW_RECEIVE_MESSAGES = 'result_allow_receive_messages',
   NEW_MESSAGE = 'new_message',
+  ACK_UPDATED = 'ack_updated',
 }
