@@ -3,3 +3,4 @@ export * from './message.model';
 export * from './whatsapp-list.model';
 export * from './whatsapp-section.model';
 export * from './whatsapp-sended-message.model';
+export * from './whatsapp-message-ack-updated.model';
