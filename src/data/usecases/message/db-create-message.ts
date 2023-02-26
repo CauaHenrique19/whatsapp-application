@@ -1,3 +1,4 @@
+import { MessageAckEnum } from 'src/data/enums';
 import { CreateMessageRepository, GetChatByIdRepository } from 'src/data/protocols/db';
 import { MultitonInterface } from 'src/data/protocols/multiton';
 import { WhatsappClientInterface } from 'src/data/protocols/whatsapp';
@@ -27,6 +28,7 @@ export class DbCreateMessage implements CreateMessageUseCase {
       fromParticipant: false,
       createdAt: new Date(),
       whatsappMessageId: sendedMessage.id,
+      ack: MessageAckEnum.SENDED,
     };
 
     const message = await this.createMessageRepository.create(messageToCreate);
