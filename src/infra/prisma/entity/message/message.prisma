@@ -5,7 +5,8 @@ model Message {
     chatId              Int      @map("chat_id")
     userId              Int?     @map("user_id")
     fromParticipant     Boolean  @map("from_participant")
-    whatsappMessageId   String @map("whatsapp_message_id")
+    whatsappMessageId   String   @map("whatsapp_message_id")
+    ack                 Int         
 
     chat Chat  @relation(fields: [chatId], references: [id])
     user User? @relation(fields: [userId], references: [id])

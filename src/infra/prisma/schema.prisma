@@ -11,7 +11,7 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["interactiveTransactions"]
+  previewFeatures = ["extendedWhereUnique"]
 }
 
 model Client {
@@ -117,6 +117,7 @@ model Message {
   userId            Int?     @map("user_id")
   fromParticipant   Boolean  @map("from_participant")
   whatsappMessageId String   @map("whatsapp_message_id")
+  ack               Int
 
   chat Chat  @relation(fields: [chatId], references: [id])
   user User? @relation(fields: [userId], references: [id])
