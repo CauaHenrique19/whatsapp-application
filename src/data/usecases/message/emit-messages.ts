@@ -35,7 +35,6 @@ export class EmitMessages implements EmitMessagesUseCase {
     const { clientId } = parameters;
 
     const { instance: client } = await this.multiton.getInstance(clientId);
-    const channels = await this.getChannelsByClientIdRepository.getByClientId({ clientId });
 
     client.onMessage(async (message) => {
       const numberParticipant = message.from;
@@ -52,6 +51,8 @@ export class EmitMessages implements EmitMessagesUseCase {
       const selectedNote =
         message.selectedRowId?.includes('_') && parseInt(message.selectedRowId?.substring(message.selectedRowId?.indexOf('_') + 1));
       const chatHasDirectedToChannel = chat?.channelId;
+
+      const channels = await this.getChannelsByClientIdRepository.getByClientId({ clientId });
 
       if (chat && numberAllowed && !isResponseOfList) {
         if (chat.status === ChatStatusEnum.FINISHED) {
